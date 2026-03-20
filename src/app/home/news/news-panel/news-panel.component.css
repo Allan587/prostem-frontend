@@ -544,9 +544,45 @@
     width: 100%;
   }
   
+  .custom-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .title-section {
-    flex: 1;
     min-width: 0; /* Allow text to truncate */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .custom-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .subtitle-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .custom-subtitle {
+    font-weight: 600;
+  }
+
+  .date-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .custom-date {
+    font-weight: 400;
   }
   
   .news-actions {

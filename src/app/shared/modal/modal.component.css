@@ -1,0 +1,18 @@
+.actions-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 0.1rem;
+}
+
+.actions-container button{
+  background: transparent;
+  padding: 3px 10px;
+  border: none;
+  color: black;
+}
+
+.actions-container button:hover {
+  color: #1940E7;
+  background: #dededf;
+}

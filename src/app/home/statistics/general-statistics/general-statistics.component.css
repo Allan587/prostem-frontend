@@ -1,0 +1,105 @@
+.cards-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  justify-content: space-evenly;
+}
+
+.stat-card {
+  padding: 1rem;
+  min-width: 250px;
+  max-width: 300px;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  justify-content: center;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-text h2 {
+  margin: 0;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.stat-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.stat-card mat-icon {
+  font-size: 40px;
+  margin-bottom: 0.5rem;
+  padding: 15px;
+  justify-content: center;
+}
+
+.charts-main-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding-left: 15px;
+  padding-right: 7px;
+}
+.charts-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1.5rem;
+  min-height: 200px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.charts-card {
+  background-color: #fafafa;
+  padding: 15px;
+  min-width: 200px;
+  width: 800px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+.bar-chart, .pie-chart {
+  max-width: 300px;
+  width: 100%;
+}
+
+.pie-legend {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.5rem;
+}
+
+.legend {
+  font-weight: bold;
+}
+
+.primaria {
+  color: #F97316;
+}
+
+.secundaria {
+  color: #8B5CF6;
+}
+
+.specificStats-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 7px;
+  padding-bottom: 15px;
+  gap: 15px;
+}

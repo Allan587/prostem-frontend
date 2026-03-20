@@ -1,0 +1,59 @@
+/* Center the container and add padding */
+.view-revision-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Style the title */
+  .view-revision-form-container h1 {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Style the form details */
+  .form-details {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-details h2 {
+    font-size: 22px;
+    color: #555;
+    margin-bottom: 15px;
+  }
+  
+  .form-details p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Style each question */
+  .question {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  .question h4 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .question ul {
+    padding-left: 20px;
+  }
+  
+  .question li {
+    font-size: 16px;
+    color: #555;
+  }

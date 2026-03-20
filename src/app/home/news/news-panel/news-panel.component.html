@@ -1,0 +1,142 @@
+<!-- Complete: src/app/home/news/news-panel/news-panel.component.html -->
+
+<div class="news-panel-container">
+    <!-- Header -->
+    <div class="panel-header">
+      <h1>Noticias</h1>
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="createNews()">
+        <mat-icon>add</mat-icon>
+        Crear Noticia
+      </button>
+    </div>
+  
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar noticias</mat-label>
+        <mat-select 
+          [(value)]="selectedFilter" 
+          (selectionChange)="onFilterChange()">
+          <mat-option 
+            *ngFor="let option of filterOptions" 
+            [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Optional: Show filter results count -->
+      <div *ngIf="!isLoading" class="filter-results">
+        <span class="results-text">
+          Mostrando {{ newsList.length }} de {{ allNewsList.length }} noticias
+        </span>
+      </div>
+    </div>
+  
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Cargando noticias...</p>
+    </div>
+  
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && newsList.length === 0 && allNewsList.length === 0" class="empty-state">
+      <mat-icon>article</mat-icon>
+      <h2>No hay noticias disponibles</h2>
+      <p>Sé el primero en crear una noticia</p>
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="createNews()">
+        <mat-icon>add</mat-icon>
+        Crear Primera Noticia
+      </button>
+    </div>
+  
+    <!-- Empty Filter Results -->
+    <div *ngIf="!isLoading && newsList.length === 0 && allNewsList.length > 0" class="empty-filter-state">
+      <mat-icon>filter_list_off</mat-icon>
+      <h2>No se encontraron noticias</h2>
+      <p *ngIf="selectedFilter === 'mine'">
+        No has creado ninguna noticia aún.
+      </p>
+      <p *ngIf="selectedFilter !== 'mine'">
+        No hay noticias que coincidan con el filtro seleccionado.
+      </p>
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="createNews()"
+        *ngIf="selectedFilter === 'mine'">
+        <mat-icon>add</mat-icon>
+        Crear Mi Primera Noticia
+      </button>
+    </div>
+  
+    <!-- News List -->
+<div *ngIf="!isLoading && newsList.length > 0" class="news-list">
+    <mat-card *ngFor="let news of newsList" class="news-card">
+      <!-- Simplified Card Header Structure -->
+      <div class="custom-card-header">
+        <div class="title-section">
+          <h3 class="custom-title">{{ news.title }}</h3>
+          <div class="custom-subtitle">
+            {{ formatDate(news.creationDate) }} - {{ formatTime(news.creationTime) }}
+            <span *ngIf="selectedFilter === 'all' && news.creatorId === userId" class="my-news-badge">
+              Mi noticia
+            </span>
+          </div>
+        </div>
+        
+        <!-- Action Buttons - Only show for news created by current user -->
+        <div *ngIf="news.creatorId === userId" class="news-actions">
+          <button 
+            mat-icon-button 
+            color="primary"
+            matTooltip="Editar noticia"
+            (click)="editNews(news)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          
+          <button 
+            mat-icon-button 
+            color="warn"
+            matTooltip="Eliminar noticia"
+            (click)="deleteNews(news)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Images -->
+      <div *ngIf="news.imageLinks && news.imageLinks.length > 0" class="news-images">
+        <div class="images-grid" [class.single-image]="news.imageLinks.length === 1">
+          <img 
+            *ngFor="let imagePath of news.imageLinks" 
+            [src]="getImageUrl(imagePath)" 
+            [alt]="news.title"
+            class="news-image"
+            (load)="onImageLoad($event, imagePath)"
+            (error)="onImageError($event)">
+        </div>
+      </div>
+  
+      <mat-card-content>
+        <div class="news-content">
+          <p [class.expanded]="isExpanded(news.id)">{{ news.content }}</p>
+          <button 
+            *ngIf="isContentTruncated(news.content)" 
+            mat-button 
+            color="primary"
+            (click)="toggleContent(news)"
+            class="read-more-btn">
+            {{ isExpanded(news.id) ? 'Leer menos' : 'Leer más' }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  </div>

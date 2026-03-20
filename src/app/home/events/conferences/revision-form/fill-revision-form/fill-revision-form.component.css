@@ -1,0 +1,116 @@
+.fill-revision-form-container {
+  padding: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+mat-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid #e9ecef;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+mat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Radio options layout */
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  mat-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+}
+
+mat-radio-button {
+  margin-right: 8px;
+}
+
+/* Multiple options layout */
+mat-checkbox {
+  display: inline-flex;
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+/* Text input full width and taller */
+mat-form-field {
+  width: 100%;
+}
+
+textarea[matInput] {
+  min-height: 120px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+/* Submit area */
+.complete-review-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e9ecef;
+}
+
+.complete-review-button button {
+  min-width: 220px;
+  font-weight: 600;
+}
+
+/* ADD THESE NEW STYLES FOR THE MODAL */
+.modal-header-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.confirmation-body {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+}
+
+.confirmation-footer {
+  display: flex;
+  justify-content: center;
+  color: #007bff;
+  font-style: italic;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+/* Center the modal confirm button */
+:host ::ng-deep app-modal .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

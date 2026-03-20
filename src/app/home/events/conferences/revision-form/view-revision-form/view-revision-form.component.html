@@ -1,0 +1,31 @@
+<div class="view-revision-form-container">
+    <h1>Formulario de Revisión</h1>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  
+    <!-- Form Details -->
+    <div *ngIf="!isLoading && form" class="form-details">
+      <h2>Detalles del Formulario</h2>
+      <p><strong>ID:</strong> {{ form.id }}</p>
+      <p><strong>Fecha de Creación:</strong> {{ form.creationDate | date }}</p>
+  
+      <h3>Preguntas</h3>
+      <div *ngFor="let question of getQuestions(form); let i = index" class="question">
+        <h4>Pregunta {{ i + 1 }}</h4>
+        <p><strong>Tipo:</strong> {{ question.type }}</p>
+        <p><strong>Pregunta:</strong> {{ question.question }}</p>
+  
+        <div *ngIf="question.options">
+          <h5>Opciones:</h5>
+          <ul>
+            <li *ngFor="let option of getOptions(question.options)">
+              {{ option }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>

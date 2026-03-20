@@ -1,0 +1,167 @@
+<div *ngIf="isLoading" class="loading-container">
+  <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+  <p>Cargando presentaciones...</p>
+</div>
+
+<div *ngIf="!isLoading" class="table_component mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" class="mat-table">
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let element">{{ element.creationId }}</td>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Título</th>
+      <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+    </ng-container>
+
+    <!-- Area Column -->
+    <ng-container matColumnDef="area">
+      <th mat-header-cell *matHeaderCellDef>Área</th>
+      <td mat-cell *matCellDef="let element">{{ element.area }}</td>
+    </ng-container>
+
+    <!-- Summary Column -->
+    <ng-container matColumnDef="summary">
+      <th mat-header-cell *matHeaderCellDef>Resumen</th>
+      <td mat-cell *matCellDef="let element">{{ element.summary }}</td>
+    </ng-container>
+
+    <!-- Document Column -->
+    <ng-container matColumnDef="document">
+      <th mat-header-cell *matHeaderCellDef>Documento</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Ver Documento" (click)="viewDocument(element.conferenceCreationId, element.creationId)">
+          <mat-icon>visibility</mat-icon>
+        </button>        
+        <button mat-icon-button matTooltip="Descargar Documento" (click)="downloadDocument(element.conferenceCreationId, element.creationId)">
+          <mat-icon>download</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- UPDATED: Presentation Document Column  -->
+    <ng-container matColumnDef="presentation">
+      <th mat-header-cell *matHeaderCellDef>Presentación</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="showNotApplicableForPresentation(element); else presentationContentTemplate">
+          <span class="no-applicable-text">No aplica</span>
+        </div>
+        <ng-template #presentationContentTemplate>
+          <div *ngIf="hasPresentationDocument(element); else noPresentationTemplate">
+            <button mat-icon-button matTooltip="Ver Presentación" (click)="viewPresentationDocument(element.conferenceCreationId, element.creationId)">
+              <mat-icon>visibility</mat-icon>
+            </button>        
+            <button mat-icon-button matTooltip="Descargar Presentación" (click)="downloadPresentationDocument(element.conferenceCreationId, element.creationId)">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+          <ng-template #noPresentationTemplate>
+            <span class="no-file-text">No se ha subido la presentación</span>
+          </ng-template>
+        </ng-template>
+      </td>
+    </ng-container>
+
+   <!-- UPDATED: Payment Receipt Column  -->
+    <ng-container matColumnDef="payment">
+      <th mat-header-cell *matHeaderCellDef>Comprobante de Pago</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="showNotApplicableForPayment(element); else paymentContentTemplate">
+          <span class="no-applicable-text">No aplica</span>
+        </div>
+        <ng-template #paymentContentTemplate>
+          <div *ngIf="hasPaymentReceipt(element); else noPaymentTemplate">
+            <button mat-icon-button matTooltip="Ver Comprobante" (click)="viewPaymentReceipt(element.conferenceCreationId, element.creationId)">
+              <mat-icon>visibility</mat-icon>
+            </button>        
+            <button mat-icon-button matTooltip="Descargar Comprobante" (click)="downloadPaymentReceipt(element.conferenceCreationId, element.creationId)">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+          <ng-template #noPaymentTemplate>
+            <span class="no-file-text">No se ha subido el comprobante de pago</span>
+          </ng-template>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- UPDATED: Payment Result Column -->
+    <ng-container matColumnDef="paymentResult">
+      <th mat-header-cell *matHeaderCellDef>Resultado de revisión de pago</th>
+      <td mat-cell *matCellDef="let element">
+        <span [ngClass]="{
+          'no-applicable-text': showNotApplicableForPayment(element),
+          'payment-not-reviewed': !showNotApplicableForPayment(element) && !element.paymentReviewed,
+          'payment-accepted': !showNotApplicableForPayment(element) && element.paymentReviewed && element.paid === true,
+          'payment-rejected': !showNotApplicableForPayment(element) && element.paymentReviewed && element.paid === false
+        }">
+          {{ getPaymentResultText(element) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- NEW: Overall Result Column -->
+    <ng-container matColumnDef="overallResult">
+      <th mat-header-cell *matHeaderCellDef>Resultado General</th>
+      <td mat-cell *matCellDef="let element">
+        <span [ngClass]="{
+          'result-accepted': element.overallResult === 'Aceptada',
+          'result-accepted-with-changes': element.overallResult === 'Aceptada con cambios requeridos',
+          'result-rejected': element.overallResult === 'No Aceptada',
+          'result-pending': element.overallResult === 'Pendiente a revisión',
+          'result-no-result': !element.overallResult || element.overallResult === 'Sin resultado'
+        }">
+          {{ getOverallResultText(element) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- UPDATED: Options Column - Add disabled state -->
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef>Opciones</th>
+      <td mat-cell *matCellDef="let element" class="cell-actions">
+        <button 
+          mat-icon-button 
+          matTooltip="Gestionar Revisores" 
+          (click)="manageReviewers(element)"
+          [disabled]="areAllButtonsDisabled()">
+          <mat-icon>group</mat-icon>
+        </button>
+        <button 
+          mat-icon-button 
+          matTooltip="Asignar Revisor" 
+          (click)="assignReviewer(element)"
+          [disabled]="areAllButtonsDisabled()">
+          <mat-icon>person_add</mat-icon>
+        </button>
+        <!-- Payment Review Button -->
+        <button 
+          *ngIf="hasPaymentReceiptForReview(element)"
+          mat-icon-button 
+          matTooltip="Dar resultado de revisión de pago" 
+          (click)="reviewPayment(element)"
+          color="accent"
+          [disabled]="areAllButtonsDisabled()">
+          <mat-icon>payment</mat-icon>
+        </button>
+        <!-- Corrected Document Button -->
+        <button 
+          *ngIf="hasCorrectedDocument(element)"
+          mat-icon-button 
+          matTooltip="Revisar documento corregido" 
+          (click)="reviewCorrectedDocument(element)"
+          color="primary"
+          [disabled]="areAllButtonsDisabled()">
+          <mat-icon>edit_document</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Header and Rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

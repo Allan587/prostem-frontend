@@ -1,0 +1,95 @@
+<h1 style="display: flex; text-align: center; flex-direction: column;">
+  Estadísticas
+</h1>
+<ng-container *ngIf="!isLoading(); else loading">
+  <div class="cards-container">
+    <!-- Total de usuarios registrados -->
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon>group</mat-icon>
+
+        <div class="stat-text">
+          <h2>{{ totalUsers() }}</h2>
+          <p>Total de usuarios registrados</p>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Total de actividades disponibles -->
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon>event</mat-icon>
+
+        <div class="stat-text">
+          <h2>{{ totalCourses() }}</h2>
+          <p>Total de actividades realizadas</p>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Total de encuestas creadas -->
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <mat-icon>assignment</mat-icon>
+
+        <div class="stat-text">
+          <h2>{{ totalSurveys() }}</h2>
+          <p>Total de encuestas creadas</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- BAR AND PIE CHARTS -->
+  <div class="charts-main-container">
+    <mat-card class="charts-card">
+      <div style="display: flex;">
+        <h3>Usuarios registrados en los últimos</h3>
+
+        <mat-form-field appearance="fill" style="margin-left: 1rem; width: 200px;">
+          <mat-label>Período</mat-label>
+          <mat-select [value]="selectedMonths()" (selectionChange)="changePeriod($event.value)">
+            <mat-option [value]="3">3 meses</mat-option>
+            <mat-option [value]="6">6 meses</mat-option>
+            <mat-option [value]="12">12 meses</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="charts-container">
+        <div class="bar-chart">
+          <canvas baseChart [data]="{ labels: monthlyLabels(), 
+          datasets: [{ data: monthlyValues(), label: 'Usuarios', backgroundColor: '#73cd70' }] }"
+            [options]="barChartOptions" chartType="bar">
+          </canvas>
+        </div>
+
+        <div class="pie-chart">
+          <canvas baseChart [data]="{ labels: educationLabels, 
+          datasets: [{ data: educationValues(), label: 'Estudiantes', backgroundColor: ['#F97316', '#8B5CF6'] }] }"
+            [options]="doughnutChartOptions" chartType="doughnut">
+          </canvas>
+          <div class="pie-legend">
+            <span class="legend primaria">Primaria</span>
+            <span class="legend secundaria">Secundaria</span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Expansion panels with specifics stats -->
+  <div class="specificStats-container">
+    <app-users-statistics />
+    <app-events-statistics />
+  </div>
+
+</ng-container>
+
+<ng-template #loading>
+  <div style="margin-top: 1rem; display: flex; flex-direction: column; align-items: center;">
+    <mat-spinner></mat-spinner>
+    Cargando estadísticas...
+  </div>
+
+</ng-template>

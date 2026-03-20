@@ -1,0 +1,250 @@
+.table-container{
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.mat-table {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+}
+
+.mat-table-cell, .mat-cell{
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table_component {
+  justify-content: center;
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table_component table {
+  border: 0.1px solid #dededf;
+  height: 100%;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 2px;
+  text-align: left;
+}
+
+.table_component th {
+  border: 0.1px solid #dededf;
+  background-color: #2c2c2c;
+  color: #D9D9D9;
+  padding: 10px;
+}
+
+.table_component td {
+  border: 0.1px solid #dededf;
+  background-color: #ffffff;
+  color: #2C2C2C;
+  padding: 10px;
+  white-space: normal;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+.cell-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.cell-actions mat-icon {
+  cursor: pointer;
+  color: #2c2c2c;
+  transition: color 0.3s;
+}
+
+.cell-actions mat-icon:hover {
+  color: #1940E7;
+}
+
+/* FIXED: Disabled button styles - Use the same style as manager-conferences */
+button[mat-icon-button]:disabled {
+  opacity: 0.5 !important; /* Reduce opacity to make it look disabled */
+  cursor: not-allowed !important; /* Change cursor to indicate it's not clickable */
+  pointer-events: none !important; /* Prevent hover effects */
+}
+
+/* ADDITIONAL: Override any Material Design disabled styles */
+.mat-icon-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background-color: transparent !important;
+}
+
+.mat-icon-button:disabled mat-icon {
+  color: #bbb !important;
+  opacity: 0.5 !important;
+}
+
+/* Prevent hover effects on disabled buttons */
+.mat-icon-button:disabled:hover {
+  background-color: transparent !important;
+}
+
+.mat-icon-button:disabled:hover mat-icon {
+  color: #bbb !important;
+}
+
+/* Center the content in the ID column */
+.table_component td.mat-column-id, 
+.table_component th.mat-column-id {
+text-align: center;
+}
+
+/* Center the content in the Documento column */
+.table_component td.mat-column-document, 
+.table_component th.mat-column-document {
+text-align: center;
+vertical-align: middle;
+}
+
+.presentations-container {
+padding: 20px;
+max-width: 1200px;
+margin: 0 auto;
+}
+
+h1 {
+color: #333;
+margin-bottom: 20px;
+}
+
+.loading-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 40px;
+}
+
+.loading-container p {
+margin-top: 16px;
+color: #666;
+}
+
+.table_component {
+margin-top: 20px;
+border-radius: 8px;
+overflow: hidden;
+}
+
+.mat-table {
+width: 100%;
+background: white;
+}
+
+.mat-header-cell {
+background-color: #f5f5f5;
+color: #333;
+font-weight: 600;
+border-bottom: 2px solid #e0e0e0;
+}
+
+.mat-cell {
+border-bottom: 1px solid #f0f0f0;
+padding: 12px;
+}
+
+.mat-row:hover {
+background-color: #f9f9f9;
+}
+
+.mat-button {
+margin: 4px;
+}
+
+.mat-icon-button {
+margin: 0 2px;
+}
+
+/* File status text styling */
+.no-file-text {
+color: #666;
+font-style: italic;
+font-size: 0.9em;
+}
+
+.no-applicable-text {
+color: #999;
+font-style: italic;
+font-size: 0.9em;
+}
+
+/* Overall result text styling */
+.result-accepted {
+color: #4caf50;
+font-weight: 500;
+}
+
+.result-accepted-with-changes {
+color: #ff9800;
+font-weight: 500;
+}
+
+.result-rejected {
+color: #f44336;
+font-weight: 500;
+}
+
+.result-pending {
+color: #2196f3;
+font-weight: 500;
+}
+
+/* Payment result text styling */
+.payment-not-reviewed {
+color: #999;
+font-style: italic;
+}
+
+.payment-accepted {
+color: #4caf50;
+font-weight: 500;
+}
+
+.payment-rejected {
+color: #f44336;
+font-weight: 500;
+}
+
+/* Toast notification styles */
+::ng-deep .success-snackbar {
+background-color: #4caf50 !important;
+color: white !important;
+}
+
+::ng-deep .error-snackbar {
+background-color: #f44336 !important;
+color: white !important;
+}
+
+::ng-deep .mat-mdc-snack-bar-container {
+--mdc-snackbar-container-color: #323232;
+--mdc-snackbar-supporting-text-color: #fff;
+}
+
+/* Make table responsive */
+@media screen and (max-width: 768px) {
+.presentations-container {
+  padding: 10px;
+}
+
+.mat-table {
+  font-size: 0.9em;
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 8px 4px;
+}
+}

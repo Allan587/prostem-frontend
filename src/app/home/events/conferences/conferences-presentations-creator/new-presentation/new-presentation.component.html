@@ -1,0 +1,132 @@
+<div class="new-presentation-container">
+  <h1>Crear Ponencia</h1>
+  <form [formGroup]="presentationForm" (ngSubmit)="createPresentation()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" placeholder="Ingrese el título de la ponencia" />
+      <mat-error *ngIf="presentationForm.get('title')?.invalid">El título es requerido.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="summary" placeholder="Ingrese la descripción"></textarea>
+      <mat-error *ngIf="presentationForm.get('summary')?.invalid">La descripción es requerida.</mat-error>
+    </mat-form-field>
+
+    <!-- Area Section -->
+    <div class="form-group">
+      <label for="area">Área</label>
+      <div class="area-container">
+        <select id="area" formControlName="area" required>
+          <option value="" disabled selected>Seleccione un área</option>
+          <option *ngFor="let area of areas" [value]="area">{{ area }}</option>
+        </select>
+        <button type="button" (click)="toggleAddArea()">Agregar nueva área</button>
+      </div>
+      <small *ngIf="presentationForm.get('area')?.invalid && presentationForm.get('area')?.touched">El área es requerida.</small>
+    </div>
+
+    <!-- Add New Area Input -->
+    <div *ngIf="isAddingArea" class="form-group">
+      <label for="newArea">Nueva Área</label>
+      <input id="newArea" [formControl]="newAreaControl" type="text" placeholder="Ingrese el nombre del área" />
+      <button type="button" (click)="addNewArea()">Guardar Área</button>
+      <small *ngIf="newAreaControl.invalid && newAreaControl.touched">Este campo es obligatorio.</small>
+    </div>
+
+    <!-- Authors Section -->
+    <div class="form-group">
+      <label>Autores</label>
+      <p class="authors-instruction">
+        Su información ya está incluida como primer autor. Use los campos a continuación solo para agregar autores adicionales. 
+        <strong>No se agregue a sí mismo nuevamente.</strong>
+      </p>
+      
+      <!-- Current user as first author (read-only display) -->
+      <div class="author-container current-user">
+        <h4>Autor 1 (Usted)</h4>
+        
+        <div class="author-fields readonly">
+          <div class="field-group">
+            <label>Nombre completo</label>
+            <input type="text" [value]="currentUserAuthor.name" readonly />
+          </div>
+
+          <div class="field-group">
+            <label>Email</label>
+            <input type="email" [value]="currentUserAuthor.email" readonly />
+          </div>
+
+          <div class="field-group">
+            <label>Institución</label>
+            <input type="text" [value]="currentUserAuthor.institution" readonly />
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional authors -->
+      <div *ngFor="let author of additionalAuthors; let i = index" class="author-container">
+        <h4>Autor {{ i + 2 }}</h4>
+        
+        <div class="author-fields">
+          <div class="field-group">
+            <label>Nombre completo</label>
+            <input type="text" [(ngModel)]="author.name" [ngModelOptions]="{standalone: true}" 
+                  placeholder="Ingrese el nombre completo" />
+          </div>
+
+          <div class="field-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="author.email" [ngModelOptions]="{standalone: true}" 
+                  placeholder="Ingrese el email" />
+          </div>
+
+          <div class="field-group">
+            <label>Institución</label>
+            <input type="text" [(ngModel)]="author.institution" [ngModelOptions]="{standalone: true}" 
+                  placeholder="Ingrese la institución" />
+          </div>
+        </div>
+
+        <button type="button" class="remove-author-btn" (click)="removeAdditionalAuthor(i)">
+          Eliminar Autor
+        </button>
+      </div>
+
+      <button type="button" class="add-author-btn" (click)="addAdditionalAuthor()">
+        Agregar Otro Autor
+      </button>
+    </div>
+
+    <label for="generalDocument">Documento General de la Ponencia</label>
+    <input id="generalDocument" type="file" (change)="onFileSelected($event, 'generalDocument')" />
+
+    <button mat-raised-button color="primary" type="submit">Crear Ponencia</button>
+  </form>
+</div>
+
+<app-modal *ngIf="isCreatingModalOpened" 
+           (closeModal)="closeCreatingModal()"
+           [showSubmitBtn]="false" 
+           [isSubmittingChanges]="isSubmittingPresentation">
+  <ng-container modal-header>
+    <div class="modal-header-text">
+      Creando Ponencia
+    </div>
+  </ng-container>
+  <ng-container modal-body>
+    <div class="confirmation-body">
+      <div class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p style="margin-top: 15px; text-align: center; color: #007bff;">
+          Creando ponencia, por favor espera...
+        </p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <div class="confirmation-footer">
+      <small style="color: #007bff;">Procesando...</small>
+    </div>
+  </ng-container>
+</app-modal>

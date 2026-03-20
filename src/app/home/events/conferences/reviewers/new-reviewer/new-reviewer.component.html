@@ -1,0 +1,154 @@
+<div class="new-reviewer-form">
+  <h1>Crear Nuevo Revisor</h1>
+  
+  <form [formGroup]="form" (ngSubmit)="openConfirmationModal()">
+    
+    <!-- Name Field -->
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input id="name" formControlName="name" type="text" placeholder="Ingrese el nombre" required>
+      <small *ngIf="fieldIsEmpty('name')" style="color: rgb(255, 73, 73);">Debes ingresar el nombre.</small>
+      <small *ngIf="fieldIsTooShort('name')" style="color: rgb(255, 73, 73);">El nombre debe tener al menos {{minNameLength}} caracteres.</small>
+      <small *ngIf="fieldIsTooLong('name')" style="color: rgb(255, 73, 73);">Ingresa un nombre con menos de {{maxNameLength}} caracteres.</small>
+      <small *ngIf="fieldHasPatternError('name')" style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+    </div>
+
+    <!-- Last Name 1 Field -->
+    <div class="form-group">
+      <label for="lastName1">Primer apellido</label>
+      <input id="lastName1" formControlName="lastName1" type="text" placeholder="Ingrese el primer apellido" required>
+      <small *ngIf="fieldIsEmpty('lastName1')" style="color: rgb(255, 73, 73);">Debes ingresar el apellido.</small>
+      <small *ngIf="fieldIsTooShort('lastName1')" style="color: rgb(255, 73, 73);">El apellido debe tener al menos {{minNameLength}} caracteres.</small>
+      <small *ngIf="fieldIsTooLong('lastName1')" style="color: rgb(255, 73, 73);">Ingresa un apellido con menos de {{maxNameLength}} caracteres.</small>
+      <small *ngIf="fieldHasPatternError('lastName1')" style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+    </div>
+
+    <!-- Last Name 2 Field -->
+    <div class="form-group">
+      <label for="lastName2">Segundo apellido</label>
+      <input id="lastName2" formControlName="lastName2" type="text" placeholder="Ingrese el segundo apellido" required>
+      <small *ngIf="fieldIsEmpty('lastName2')" style="color: rgb(255, 73, 73);">Debes ingresar el apellido.</small>
+      <small *ngIf="fieldIsTooShort('lastName2')" style="color: rgb(255, 73, 73);">El apellido debe tener al menos {{minNameLength}} caracteres.</small>
+      <small *ngIf="fieldIsTooLong('lastName2')" style="color: rgb(255, 73, 73);">Ingresa un apellido con menos de {{maxNameLength}} caracteres.</small>
+      <small *ngIf="fieldHasPatternError('lastName2')" style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" placeholder="correo@ejemplo.com" required>
+      <small *ngIf="fieldIsEmpty('email')" style="color: rgb(255, 73, 73);">Debes ingresar el correo.</small>
+      <small *ngIf="invalidEmail()" style="color: rgb(255, 73, 73);">Usa un correo válido.</small>
+      <small *ngIf="fieldIsTooLong('email')" style="color: rgb(255, 73, 73);">Ingresa un correo con menos de {{maxEmailLength}} caracteres.</small>
+    </div>
+
+    <!-- Phone Field -->
+    <div class="form-group">
+      <label for="phone">Teléfono</label>
+      <input id="phone" formControlName="phone" type="tel" placeholder="8080-1234" required>
+      <small *ngIf="fieldIsEmpty('phone')" style="color: rgb(255, 73, 73);">Debes ingresar el número telefónico.</small>
+      <small *ngIf="fieldHasPatternError('phone')" style="color: rgb(255, 73, 73);">Usa el formato "8080-7070" o "80807070".</small>
+    </div>
+
+    <!-- Birth Date Field -->
+    <div class="form-group">
+      <label for="birthDate">Fecha de nacimiento</label>
+      <input id="birthDate" formControlName="birthDate" type="date" [max]="minimumBirthDate.toISODate()" required>
+      <small *ngIf="fieldIsEmpty('birthDate')" style="color: rgb(255, 73, 73);">Debes seleccionar la fecha de nacimiento.</small>
+    </div>
+
+    <!-- Institution Field -->
+    <div class="form-group">
+      <label for="institution">Lugar de trabajo (institución)</label>
+      <input id="institution" formControlName="institution" type="text" placeholder="Ingrese la institución" required>
+      <small *ngIf="fieldIsEmpty('institution')" style="color: rgb(255, 73, 73);">Debes ingresar el lugar de trabajo.</small>
+      <small *ngIf="fieldIsTooShort('institution')" style="color: rgb(255, 73, 73);">El nombre debe tener al menos {{minInstitutionLength}} caracteres.</small>
+      <small *ngIf="fieldIsTooLong('institution')" style="color: rgb(255, 73, 73);">Ingresa un nombre con menos de {{maxInstitutionLength}} caracteres.</small>
+    </div>
+
+    <!-- ORCID/DOI Field -->
+    <div class="form-group">
+      <label for="orcidDoi">Número ORCID/DOI (Opcional)</label>
+      <input id="orcidDoi" formControlName="orcidDoi" type="text" placeholder="Ingrese el número ORCID/DOI">
+      <small>Este campo es opcional.</small>
+    </div>
+
+    <!-- Teaching Level Field -->
+    <div class="form-group">
+      <label for="teachingLevel">Nivel de enseñanza</label>
+      <mat-form-field appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select formControlName="teachingLevel" (selectionChange)="onTeachingLevelChange($event.value)" required>
+          <mat-option *ngFor="let level of availableTeachingLevels" [value]="level">
+            {{ level }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <small *ngIf="fieldIsEmpty('teachingLevel')" style="color: rgb(255, 73, 73);">Selecciona el nivel de enseñanza.</small>
+    </div>
+
+    <!-- Specializations Field -->
+    <div class="form-group" *ngIf="selectedTeachingLevel === 'Secundaria'">
+      <label for="specializations">Especialización</label>
+      <mat-form-field appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select multiple [value]="selectedSpecializations" (selectionChange)="onSpecializationChange($event.value)">
+          <mat-option *ngFor="let specialization of availableSpecializations" [value]="specialization">
+            {{ specialization }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <small *ngIf="specializationsRequired()" style="color: rgb(255, 73, 73);">Selecciona al menos una especialización.</small>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <small style="color: #7b7e80;">Los campos son obligatorios excepto donde se indique lo contrario</small>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="form.invalid || isSubmitting" class="submit-button">
+      Crear Revisor
+    </button>
+  </form>
+
+  <!-- Confirmation Modal -->
+  <app-modal *ngIf="isConfirmationModalOpened" 
+             (closeModal)="closeConfirmationModal()"
+             (submitModal)="submitForm()" 
+             [showSubmitBtn]="true" 
+             [isSubmittingChanges]="isSubmitting">
+    <ng-container modal-header>
+      <div class="modal-header-text">
+        {{ isSubmitting ? 'Creando Revisor' : 'Confirmar creación de revisor' }}
+      </div>
+    </ng-container>
+    <ng-container modal-body>
+      <div class="confirmation-body">
+        <!-- Loading State -->
+        <div *ngIf="isSubmitting" class="loading-container">
+          <mat-spinner diameter="40" color="primary"></mat-spinner>
+          <p style="margin-top: 15px; text-align: center; color: #007bff;">
+            Creando revisor, por favor espera...
+          </p>
+        </div>
+
+        <!-- Confirmation State -->
+        <div *ngIf="!isSubmitting">
+          ¿Estás seguro de que quieres crear el revisor con los siguientes datos?
+          <br><br>
+          <strong>Nombre:</strong> {{ pendingReviewerData?.name }} {{ pendingReviewerData?.lastName1 }} {{ pendingReviewerData?.lastName2 }}<br>
+          <strong>Email:</strong> {{ pendingReviewerData?.email }}<br>
+          <strong>Institución:</strong> {{ pendingReviewerData?.institution }}<br>
+          <strong>Nivel de enseñanza:</strong> {{ pendingReviewerData?.teachingLevel }}<br>
+          <strong>Especializaciones:</strong> {{ pendingReviewerData?.specializations?.join(', ') || 'Ninguna' }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-container modal-footer>
+      <div class="confirmation-footer">
+        <small *ngIf="!isSubmitting">Se generará una contraseña temporal automáticamente.</small>
+        <small *ngIf="isSubmitting" style="color: #007bff;">Generando contraseña temporal...</small>
+      </div>
+    </ng-container>
+  </app-modal>
+</div>

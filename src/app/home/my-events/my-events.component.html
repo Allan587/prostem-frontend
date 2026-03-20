@@ -1,0 +1,108 @@
+<h1 style="display: flex; text-align: center; flex-direction: column;">
+  Mis cursos
+</h1>
+@if(isLoadingEvents){
+<div class="spinner-container" style="margin-top: 60px;">
+  <mat-spinner></mat-spinner>
+</div>
+}@else {
+@if (dataSource.data.length === 0){
+<div style="text-align: center; margin-top: auto; margin-bottom: auto;">
+  <p>
+    No te has inscrito a ningún curso/actividad.
+  </p>
+  <p>
+    Ver <a routerLink="/calendario">actividades disponibles</a>.
+  </p>
+</div>
+} @else {
+<div class="table_component mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-table" multiTemplateDataRows>
+    <!-- Título -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
+      <td mat-cell *matCellDef="let event">{{ event.title }}</td>
+    </ng-container>
+
+    <!-- Fecha inicio -->
+    <ng-container matColumnDef="dates">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Inicia | Finaliza</th>
+      <td mat-cell *matCellDef="let event">{{ event.startDate }} | {{ event.endDate }}</td>
+    </ng-container>
+
+    <!-- Lugar -->
+    <ng-container matColumnDef="place">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Lugar</th>
+      <td mat-cell *matCellDef="let event">{{ event.place }}</td>
+    </ng-container>
+
+    <!-- Descripción -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Descripción</th>
+      <td mat-cell *matCellDef="let event">{{ event.description }}</td>
+    </ng-container>
+
+    <!-- Tipo de evaluación del evento -->
+    <ng-container matColumnDef="evaluationType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de evaluación</th>
+      <td mat-cell *matCellDef="let event">{{ event.evaluationType }}</td>
+    </ng-container>
+
+    <!-- Opciones -->
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef>Opciones</th>
+      <td mat-cell *matCellDef="let event" class="cell-actions">
+        @if(event.evaluationType === 'Aprovechamiento'){
+        <a (click)="openSeeGradeModal(event)" #tooltip="matTooltip" matTooltip="{{seeGradeTooltipText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Anchor para ver la nota obtenida y que muestra un tooltip.">
+          <mat-icon>grading</mat-icon>
+        </a>
+        }
+        @if(event.survey){
+        <a [routerLink]="['/encuesta/' + event.survey]" #tooltip="matTooltip" matTooltip="{{seeSurveyTooltipText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Anchor para ver la encuesta y que muestra un tooltip.">
+          <mat-icon>preview</mat-icon>
+        </a>
+        }
+        @if(event.evaluationType === 'Participación' && !event.survey){
+        N/A
+        }
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+<div>
+  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" />
+
+  <!-- Modal to see the grade (if the event's evaluation type is "Aprovechamiento") -->
+  <app-modal *ngIf="isGradeModalOpened" (closeModal)="closeSeeGradeModal()" [showSubmitBtn]="false">
+    <ng-container modal-header>
+      <div class="modal-header-text">
+        Calificación obtenida
+      </div>
+    </ng-container>
+
+    <ng-container modal-body>
+      <div class="eventDeletion-body">
+        <!-- <small>Nota:</small> {{selectedEvent.grade ? selectedEvent.grade : 'Sin calificar'}} -->
+        Nota:
+        <span [ngClass]="getGradeColorClass(selectedEvent.grade)">
+          {{ selectedEvent.grade ? selectedEvent.grade : 'Sin calificar' }}
+        </span>
+        <br>
+        <br>
+        <small>{{selectedEvent.eventCategory}}: '{{selectedEvent.title}}'</small>
+      </div>
+
+    </ng-container>
+    <ng-container modal-footer>
+    </ng-container>
+  </app-modal>
+</div>
+}
+
+}

@@ -1,0 +1,82 @@
+<mat-accordion class="headers-align">
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> Usuarios </mat-panel-title>
+      <mat-panel-description>
+        {{panelOpenState() ? '' : 'Expande para ver más información.'}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+      <div class="downloadButton-container">
+        <button (click)="downloadCSV()" #tooltip="matTooltip" matTooltip="{{downloadDataTooltipText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Botón para descargar los datos y que muestra un tooltip.">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+      <div class="main-container">
+        <div class="cards-container">
+          <mat-card class="stat-card">
+            <div class="stat-content">
+              <mat-icon>calculate</mat-icon>
+              <div class="stat-text">
+                <h2>{{ ageStats()?.average }}</h2>
+                <p>Edad promedio</p>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="stat-card">
+            <div class="stat-content">
+              <mat-icon>expand_less</mat-icon>
+              <div class="stat-text">
+                <h2>{{ ageStats()?.max }}</h2>
+                <p>Edad máxima</p>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="stat-card">
+            <div class="stat-content">
+              <mat-icon>expand_more</mat-icon>
+              <div class="stat-text">
+                <h2>{{ ageStats()?.min }}</h2>
+                <p>Edad mínima</p>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+
+
+        <div class="charts-container">
+          <!-- Gráfico de roles -->
+          <mat-card class="charts-card">
+            <h3>Distribución por rol</h3>
+            <canvas baseChart *ngIf="rolesChartData()" [data]="rolesChartData()" [options]="rolesChartOptions"
+              chartType="doughnut">
+            </canvas>
+          </mat-card>
+
+          <!-- Gráfico de participación -->
+          <mat-card class="charts-card">
+            <h3>Participación en eventos</h3>
+            <canvas baseChart *ngIf="participationData()" [data]="participationData()"
+              [options]="participationChartOptions" chartType="bar">
+            </canvas>
+          </mat-card>
+
+          <!-- Gráfico de especializaciones -->
+          <mat-card class="charts-card">
+            <h3>Especializaciones más comunes</h3>
+            <canvas baseChart *ngIf="specializationsData()" [data]="specializationsData()"
+              [options]="specializationsChartOptions" chartType="bar">
+            </canvas>
+          </mat-card>
+        </div>
+
+      </div>
+    </ng-template>
+
+  </mat-expansion-panel>
+</mat-accordion>

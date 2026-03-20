@@ -1,0 +1,225 @@
+<div class="main-container">
+  <h1 style="display: flex; text-align: center; flex-direction: column;">
+    Mi cuenta
+  </h1>
+
+  <div class="user-account-wrapper">
+    <div class="form-card">
+      <div class="profile-grid">
+        <div>
+          <img class="profile-pic" [src]="user?.photoURL || profileBlankPicturePath" alt="Foto de perfil" />
+          <!-- <img class="profile-pic" [src]="photoURLWithCacheBypass || user?.photoURL || profileBlankPicturePath"
+            alt="Foto de perfil" /> -->
+        </div>
+
+        <div>
+          <label for="signUpMethod" class="form-label" style="display: flex; justify-content: center;">
+            Subir Foto de perfil
+          </label>
+          <div class="file-upload-wrapper">
+            <label for="profilePicture" class="custom-file-button"
+              [ngStyle]="{ 'background-color': uploadedFile ? '#9beb98' : '#e0e0e0' }">
+              Seleccionar foto
+            </label>
+            <input type="file" id="profilePicture" accept="image/png, image/jpeg" (change)="onPhotoSelected($event)">
+            @if(uploadedFile){
+            <span class="file-name">{{ selectedFileName || 'Ningún archivo seleccionado' }}</span>
+            }@else {
+            <span class="file-name">
+              <small>Tamaño máximo permitido: {{maxFileSizeMB}} MB</small>
+            </span>
+            }
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <label class="form-label email-label">Correo: {{ user?.email }}</label>
+      </div>
+
+      <!-- <img class="profile-pic" [src]="user?.photoURL || profileBlankPicturePath" alt="Foto de perfil" />
+
+      <label class="form-label">Cambiar foto de perfil</label>
+      <input type="file" (change)="onPhotoSelected($event)" accept="image/*" />
+
+      <label class="form-label email-label">Correo: {{ user?.email }}</label> -->
+
+      <form class="profile-form" [formGroup]="form" (ngSubmit)="submitUserAccountForm()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" name="name" id="name" class="form-input" placeholder="Tu nombre" required
+              formControlName="name" />
+            @if (fieldIsEmpty('name')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu nombre</small>
+            }
+            @else if (fieldIsTooShort('name')) {
+            <small style="color: rgb(255, 73, 73);">El nombre debe tener al menos {{minNameLength}} caracteres</small>
+            }
+            @else if (fieldIsTooLong('name')) {
+            <small style="color: rgb(255, 73, 73);">Ingresa un nombre con menos de {{maxNameLength}} caracteres</small>
+            }
+            @else if (fieldHasPatternError('name')) {
+            <small style="color: rgb(255, 73, 73);">Caracter inválido</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="lastName1" class="form-label">Primer apellido</label>
+            <input type="text" name="lastName1" id="lastName1" class="form-input" placeholder="Tu primer apellido"
+              required formControlName="lastName1" />
+            @if (fieldIsEmpty('lastName1')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu apellido.</small>
+            }
+            @else if (fieldIsTooShort('lastName1')) {
+            <small style="color: rgb(255, 73, 73);">El apellido debe tener al menos {{minNameLength}}
+              caracteres.</small>
+            }
+            @else if (fieldIsTooLong('lastName1')) {
+            <small style="color: rgb(255, 73, 73);">Ingresa un apellido con menos de {{maxNameLength}}
+              caracteres.</small>
+            }
+            @else if (fieldHasPatternError('lastName1')) {
+            <small style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="lastName2" class="form-label">Segundo apellido</label>
+            <input type="text" name="lastName2" id="lastName2" class="form-input" placeholder="Tu segundo apellido"
+              formControlName="lastName2" />
+            @if (fieldIsEmpty('lastName2')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu apellido.</small>
+            }
+            @else if (fieldIsTooShort('lastName2')) {
+            <small style="color: rgb(255, 73, 73);">
+              El apellido debe tener al menos {{minNameLength}} caracteres.</small>
+            }
+            @else if (fieldIsTooLong('lastName2')) {
+            <small style="color: rgb(255, 73, 73);">
+              Ingresa un apellido con menos de {{maxNameLength}} caracteres.</small>
+            }
+            @else if (fieldHasPatternError('lastName2')) {
+            <small style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="birthDate" class="form-label">Fecha de nacimiento</label>
+            <input type="date" name="birthDate" id="birthDate" class="form-input" required
+              formControlName="birthDate" />
+            @if (fieldIsEmpty('birthDate')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu fecha de nacimiento.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="institution" class="form-label">Institución</label>
+            <input type="text" name="institution" id="institution" class="form-input"
+              placeholder="El nombre de tu institución" required formControlName="institution" />
+            @if (fieldIsEmpty('institution')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu lugar de trabajo.</small>
+            }
+            @else if (fieldIsTooShort('institution')) {
+            <small style="color: rgb(255, 73, 73);">
+              El nombre debe tener al menos {{minInstitutionLength}} caracteres.
+            </small>
+            }
+            @else if (fieldIsTooLong('institution')) {
+            <small style="color: rgb(255, 73, 73);">
+              Ingresa un nombre con menos de {{maxInstitutionLength}} caracteres.
+            </small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Teléfono</label>
+            <input type="tel" name="phone" id="phone" class="form-input" placeholder="8080-7070" required
+              formControlName="phone" />
+            @if (fieldIsEmpty('phone')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu número telefónico</small>
+            }
+            @else if (fieldHasPatternError('phone')) {
+            <small style="color: rgb(255, 73, 73);">Usa el formato "8080-7070" o "80807070"</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nivel de enseñanza</label>
+            <mat-form-field appearance="outline">
+              <mat-label>Selecciona</mat-label>
+              <mat-select formControlName="teachingLevel" (selectionChange)="onTeachingLevelChange($event)">
+                <mat-option *ngFor="let teachingLevel of availableTeachingLevels" [value]="teachingLevel">
+                  {{ teachingLevel }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group" *ngIf="selectedTeachingLevel === 'Secundaria'">
+            <label class="form-label">Especialización</label>
+            <mat-form-field appearance="outline">
+              <mat-label>Selecciona</mat-label>
+              <mat-select multiple formControlName="specializations">
+                <mat-option *ngFor="let specialization of availableSpecializations" [value]="specialization">
+                  {{ specialization }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center;">
+          <button type="submit" class="form-button" [disabled]="coolDownIsActive"
+            style="display: flex; justify-content: center;">
+            <ng-container *ngIf="!isSubmitting && !coolDownIsActive">
+              Actualizar información
+            </ng-container>
+
+            <ng-container *ngIf="isSubmitting && coolDownIsActive">
+              <mat-spinner diameter="20" color="accent" style="margin-right: 8px; vertical-align: middle;" />
+              Actualizando...
+            </ng-container>
+
+            <ng-container *ngIf="!isSubmitting && coolDownIsActive">
+              Espera un momento...
+            </ng-container>
+          </button>
+        </div>
+
+      </form>
+
+      <div style="display: flex; justify-content: center; margin-top: 12px; word-wrap: break-word;">
+        <a (click)="openPasswordRecoveryModal()" class="form-a-tag">
+          Presiona para cambiar tu contraseña
+        </a>
+      </div>
+    </div>
+
+    <!-- Modal to reset password -->
+    <app-modal *ngIf="isPassRecoveryModalOpened" (closeModal)="closePasswordRecoveryModal()"
+      (submitModal)="submitPasswordRecovery()" [showSubmitBtn]="true" [submitBtnText]="'Enviar'"
+      [isSubmittingChanges]="isSubmittingReset">
+      <ng-container modal-header>
+        <div class="modal-header-text" style="font-size: 22px;">
+          Cambiar contraseña
+        </div>
+      </ng-container>
+      <ng-container modal-body>
+        <div class="form-spacing" style="text-align: justify;">
+          <p>
+            Se enviará un correo de actualización de contraseña a "<strong>{{user?.email}}</strong>".
+            El mismo tendrá un enlace seguro para que cambies tu contraseña. Recuerda usar una
+            <i>contraseña segura</i> que incluya al menos:
+          </p>
+          <ul>
+            <li>6 caracteres.</li>
+            <li>Un caracter numérico.</li>
+            <li>Un caracter en minúscula.</li>
+            <li>Un caracter en mayúscula.</li>
+          </ul>
+        </div>
+      </ng-container>
+      <ng-container modal-footer />
+    </app-modal>
+  </div>
+</div>

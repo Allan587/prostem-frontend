@@ -1,0 +1,77 @@
+<div class="conferences-speaker-container">
+
+  <!-- Mostrar el spinner mientras se cargan las conferencias -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+    <p>Cargando conferencias...</p>
+  </div>
+
+  <div *ngIf="!isLoading && dataSource.length === 0" class="no-conferences-message">
+    <p>Usted no tiene ponencias registradas en ninguna conferencia</p>
+  </div>
+
+  <!-- Mostrar la tabla cuando las conferencias estén cargadas -->
+  <div *ngIf="!isLoading && dataSource.length > 0" class="table_component mat-elevation-z8">
+    <h1>Mis Conferencias</h1>
+    <table mat-table [dataSource]="dataSource" class="mat-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.creationId }}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Título</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <!-- Start Date Column -->
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Fecha de Inicio</th>
+        <td mat-cell *matCellDef="let element">{{ element.startDate }}</td>
+      </ng-container>
+
+      <!-- Finish Date Column -->
+      <ng-container matColumnDef="finishDate">
+        <th mat-header-cell *matHeaderCellDef>Fecha de Fin</th>
+        <td mat-cell *matCellDef="let element">{{ element.finishDate }}</td>
+      </ng-container>
+
+      <!-- Estado Column -->
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element">
+          <span [ngClass]="element.active ? 'status-active' : 'status-inactive'">
+            {{ element.active ? 'Activa' : 'Inactiva' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Options Column -->
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef>Opciones</th>
+        <td mat-cell *matCellDef="let element" class="cell-actions">
+          <!-- View My Presentations Button -->
+          <button
+            mat-icon-button
+            matTooltip="Ver mis ponencias en esta conferencia"
+            (click)="viewMyPresentations(element)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<ng-template cdkPortal>
+  <!-- <div class="modal">
+    <div class="modal-header">
+      <div style="margin-left: 30%;">
+        <ng-content select="[modal-header]"></ng-content>
+      </div>
+      <button class="close-button" (click)="closeModal.emit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ng-content select="[modal-body]"></ng-content>
+    </div>
+    <div class="modal-footer" *ngIf="showConfirmBtn">
+      <button (click)="onSubmit()">Confirmar</button>
+      <div class="warning" *ngIf="showWarning">
+        ¡Esta acción no se puede deshacer!
+      </div>
+    </div>
+  </div> -->
+
+  <div class="modal">
+    <div class="modal-header">
+      <ng-content select="[modal-header]"></ng-content>
+      <button class="close-button" (click)="closeModal.emit()" #tooltip="matTooltip"
+        matTooltip="{{closeButtonTooltipText}}" [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+        aria-label="Botón para cerrar la ventana modal y que muestra un tooltip.">
+        <mat-icon color="black">close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content select="[modal-body]"></ng-content>
+    </div>
+
+    <div class="modal-footer">
+      <div class="modal-footer-button" *ngIf="showSubmitBtn">
+        <button class="submit-button" (click)="onSubmit()" [disabled]="isSubmittingChanges">
+          {{submitBtnText}}
+        </button>
+      </div>
+      <ng-content select="[modal-footer]"></ng-content>
+    </div>
+  </div>
+</ng-template>

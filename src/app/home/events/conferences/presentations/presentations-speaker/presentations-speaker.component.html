@@ -1,0 +1,214 @@
+<div class="presentations-speaker-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+    <p>Cargando presentaciones...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="table_component mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.creationId }}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Título</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+        <td mat-cell *matCellDef="let element">{{ element.summary }}</td>
+      </ng-container>
+
+      <!-- DOCUMENT COLUMN - FIXED -->
+    <ng-container matColumnDef="document">
+      <th mat-header-cell *matHeaderCellDef>Documento</th>
+      <td mat-cell *matCellDef="let element">
+        <!-- Use conferenceCreationId and creationId correctly -->
+        <button mat-icon-button matTooltip="Ver Documento" (click)="viewDocument(element.conferenceCreationId, element.creationId)">
+          <mat-icon>visibility</mat-icon>
+        </button>        
+        <button mat-icon-button matTooltip="Descargar Documento" (click)="downloadDocument(element.conferenceCreationId, element.creationId)">
+          <mat-icon>download</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+      <!-- Created At Column -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>Fecha de Creación</th>
+        <td mat-cell *matCellDef="let element">{{ element.createdAt | date }}</td>
+      </ng-container>
+
+     <!-- NEW: Presentation Document Column - FIXED -->
+    <ng-container matColumnDef="presentation">
+      <th mat-header-cell *matHeaderCellDef>Presentación</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="showNotApplicableForPresentation(element); else presentationContentTemplate">
+          <span class="no-applicable-text">No aplica</span>
+        </div>
+        <ng-template #presentationContentTemplate>
+          <div *ngIf="hasPresentationDocument(element); else noPresentationTemplate">
+            <button mat-icon-button matTooltip="Ver Presentación" (click)="viewPresentationDocument(element.conferenceCreationId, element.creationId)">
+              <mat-icon>visibility</mat-icon>
+            </button>        
+            <button mat-icon-button matTooltip="Descargar Presentación" (click)="downloadPresentationDocument(element.conferenceCreationId, element.creationId)">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+          <ng-template #noPresentationTemplate>
+            <span class="pending-upload-text">Pendiente a subir</span>
+          </ng-template>
+        </ng-template>
+      </td>
+    </ng-container>
+
+      <!-- NEW: Payment Receipt Column - FIXED -->
+      <ng-container matColumnDef="payment">
+        <th mat-header-cell *matHeaderCellDef>Comprobante de Pago</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="showNotApplicableForPayment(element); else paymentContentTemplate">
+            <span class="no-applicable-text">No aplica</span>
+          </div>
+          <ng-template #paymentContentTemplate>
+            <div *ngIf="hasPaymentReceipt(element); else noPaymentTemplate">
+              <button mat-icon-button matTooltip="Ver Comprobante" (click)="viewPaymentReceipt(element.conferenceCreationId, element.creationId)">
+                <mat-icon>visibility</mat-icon>
+              </button>        
+              <button mat-icon-button matTooltip="Descargar Comprobante" (click)="downloadPaymentReceipt(element.conferenceCreationId, element.creationId)">
+                <mat-icon>download</mat-icon>
+              </button>
+            </div>
+            <ng-template #noPaymentTemplate>
+              <span class="pending-upload-text">Pendiente a subir</span>
+            </ng-template>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- State Column -->
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element">{{ element.overallResult || 'Pendiente' }}</td>
+      </ng-container>
+
+     <!-- Options Column - FIXED -->
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef>Opciones</th>
+      <td mat-cell *matCellDef="let element">
+        <!-- Icon Button for "Subir versión con correcciones" -->
+        <button
+          mat-icon-button
+          color="warn"
+          [disabled]="isButtonDisabled(element, 'corrected')"
+          [ngClass]="isButtonDisabled(element, 'corrected') ? 'disabled-button' : 'enabled-button'"
+          [matTooltip]="isButtonDisabled(element, 'corrected') ? 'No disponible' : 'Subir versión con correcciones'"
+          (click)="onButtonClick('corrected', element.creationId)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <input
+          type="file"
+          id="corrected-{{element.creationId}}"
+          accept=".pdf,.doc,.docx"
+          (change)="onFileSelected($event, element.conferenceCreationId, element.creationId, element.id)"
+          style="display: none;"
+        />
+
+          <!-- Icon Button for "Subir versión final" - FIXED -->
+          <button
+          mat-icon-button
+          color="primary"
+          [disabled]="isButtonDisabled(element, 'final')"
+          [ngClass]="isButtonDisabled(element, 'final') ? 'disabled-button' : 'enabled-button'"
+          [matTooltip]="isButtonDisabled(element, 'final') ? 'No disponible' : tooltipMap[element.id] || 'Subir versión final'"
+          (click)="onButtonClick('final', element.creationId)"
+          >
+          <mat-icon>person_add</mat-icon>
+          </button>
+          <input
+          type="file"
+          id="final-{{element.creationId}}"
+          accept=".pdf,.doc,.docx"
+          (change)="onFileSelected($event, element.conferenceCreationId, element.creationId, element.id)"
+          style="display: none;"
+          />
+
+          <!-- Icon Button for "Subir presentación" - FIXED -->
+          <button
+          mat-icon-button
+          color="primary"
+          [disabled]="isButtonDisabled(element, 'presentation')"
+          [ngClass]="isButtonDisabled(element, 'presentation') ? 'disabled-button' : 'enabled-button'"
+          matTooltip="Subir presentación"
+          (click)="onButtonClick('presentation', element.creationId)"
+          >
+          <mat-icon>slideshow</mat-icon>
+          </button>
+          <input
+          type="file"
+          id="presentation-{{element.creationId}}"
+          accept=".pdf,.ppt,.pptx"
+          (change)="onFileSelected($event, element.conferenceCreationId, element.creationId, element.id)"
+          style="display: none;"
+          />
+
+          <!-- Icon Button for "Subir comprobante de pago" - FIXED -->
+          <button
+          mat-icon-button
+          color="accent"
+          [disabled]="isButtonDisabled(element, 'payment')"
+          [ngClass]="isButtonDisabled(element, 'payment') ? 'disabled-button' : 'enabled-button'"
+          matTooltip="Subir comprobante de pago"
+          (click)="onButtonClick('payment', element.creationId)"
+          >
+          <mat-icon>receipt</mat-icon>
+          </button>
+          <input
+          type="file"
+          id="payment-{{element.creationId}}"
+          accept=".jpg,.jpeg,.png,.pdf"
+          (change)="onFileSelected($event, element.conferenceCreationId, element.creationId, element.id)"
+          style="display: none;"
+          />
+        </td>
+      </ng-container>
+
+      <!-- Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <app-modal *ngIf="isUploadingModalOpened" 
+           (closeModal)="closeUploadingModal()"
+           [showSubmitBtn]="false" 
+           [isSubmittingChanges]="isSubmittingDocument">
+  <ng-container modal-header>
+    <div class="modal-header-text">
+      {{ getUploadingTitle() }}
+    </div>
+  </ng-container>
+  <ng-container modal-body>
+    <div class="confirmation-body">
+      <div class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p style="margin-top: 15px; text-align: center; color: #007bff;">
+          {{ getUploadingMessage() }}
+        </p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <div class="confirmation-footer">
+      <small style="color: #007bff;">Procesando...</small>
+    </div>
+  </ng-container>
+</app-modal>
+
+</div>
+

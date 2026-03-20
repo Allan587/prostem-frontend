@@ -1,0 +1,25 @@
+.conference-panel {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .conference-panel h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .module-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+    .module-card app-card {
+        width: 300px;
+        height: 300px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-radius: 8px;
+    }

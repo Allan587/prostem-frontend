@@ -1,0 +1,34 @@
+p {
+  color: #757575;
+}
+
+.card-style {
+  cursor: pointer;
+  border-radius: 8px;
+  border: solid;
+  border-width: 1px;
+  border-color: #757575;
+  margin: 20px;
+  padding: 15px;
+  padding-bottom: 25px;
+  max-width: 590px;
+}
+
+.big-icon {
+  font-size: 45px;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+}
+
+@media (max-width: 499px) {
+  .card-style {
+    margin: 10px;
+  }
+}
+
+@media (max-width: 299px) {
+  .card-style {
+    margin: 7px;
+  }
+}

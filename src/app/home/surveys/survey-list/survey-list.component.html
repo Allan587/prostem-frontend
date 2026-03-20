@@ -1,0 +1,138 @@
+<div>
+  <div class="add-survey-button">
+    <button routerLink="/crear-encuesta" style="display: flex; margin-bottom: 4px; align-items: center;">
+      <mat-icon>add</mat-icon>
+      Crear encuesta
+    </button>
+  </div>
+
+  @if(isLoading()){
+  <div class="spinner-container" style="margin-top: 60px;">
+    <mat-spinner></mat-spinner>
+  </div>
+  }@else {
+  <div class="table_component mat-elevation-z8" role="region" tabindex="0">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-table" multiTemplateDataRows>
+
+      <!-- ID -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+        <td mat-cell *matCellDef="let survey">{{ survey.id }}</td>
+      </ng-container>
+
+      <!-- Título -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
+        <td mat-cell *matCellDef="let survey">{{ survey.title }}</td>
+      </ng-container>
+
+      <!-- Opciones -->
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center">Opciones</th>
+        <td mat-cell *matCellDef="let survey" class="cell-actions">
+          <a [routerLink]="['/encuesta/' + survey.id]" #tooltip="matTooltip" matTooltip="{{seeSurveyTooltipText}}"
+            [matTooltipPosition]="'above'" matTooltipHideDelay="{{toolTipDuration}}"
+            aria-label="Anchor para ver la encuesta y que muestra un tooltip.">
+            <mat-icon>preview</mat-icon>
+          </a>
+          <a (click)="openAssignSurveyModal(survey)" #tooltip="matTooltip" matTooltip="{{addSurveyToEventTooltipText}}"
+            [matTooltipPosition]="'above'" matTooltipHideDelay="{{toolTipDuration}}"
+            aria-label="Anchor para asignar la encuesta y que muestra un tooltip.">
+            <mat-icon>assignment_add</mat-icon>
+          </a>
+          <a [routerLink]="['/ver-respuestas/' + survey.id]" *ngIf="hasResponsesMap.get(survey.id)"
+            #tooltip="matTooltip" matTooltip="{{seeSurveyResponsesToltilpText}}" [matTooltipPosition]="'above'"
+            matTooltipHideDelay="{{toolTipDuration}}"
+            aria-label="Anchor para ver las respuestas de la encuesta y que muestra un tooltip.">
+            <mat-icon>rate_review</mat-icon>
+          </a>
+          <a (click)="downloadCSV(survey.id, survey.title)" *ngIf="hasResponsesMap.get(survey.id)" #tooltip="matTooltip"
+            matTooltip="{{downloadResponsesToltilpText}}" [matTooltipPosition]="'above'"
+            matTooltipHideDelay="{{toolTipDuration}}"
+            aria-label="Anchor para ver las respuestas de la encuesta y que muestra un tooltip.">
+            <mat-icon>download</mat-icon>
+          </a>
+          <a (click)="openDeleteModal(survey)" #tooltip="matTooltip" matTooltip="{{deleteSurveyTootilpText}}"
+            [matTooltipPosition]="'above'" matTooltipHideDelay="{{toolTipDuration}}"
+            aria-label="Anchor para eliminar la encuestas y que muestra un tooltip.">
+            <mat-icon>delete</mat-icon>
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Header y Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+  </div>
+
+  <div>
+    <div *ngIf="dataSource.data.length === 0" style="text-align: center;">
+      No hay encuestas registradas.
+    </div>
+    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+
+    <!-- Modal to assign surveys -->
+    <app-modal *ngIf="isAssignSurveyModalOpened" (closeModal)="closeAssignSurveyModal()"
+      (submitModal)="submitAssignSurveyModal(selectedSurvey?.id)" [showSubmitBtn]="true"
+      [isSubmittingChanges]="isSubmitting">
+      <ng-container modal-header>
+        <div class="modal-header-text">
+          Asignar encuesta a eventos
+        </div>
+      </ng-container>
+
+      <ng-container modal-body>
+        <ng-container *ngIf="events.length > 0; else noEvents">
+          <small>Selecciona eventos aún sin encuesta</small>
+          <div class="make-select-wider">
+            <mat-form-field appearance="fill" class="w-full">
+              <mat-label>Eventos</mat-label>
+              <mat-select [(ngModel)]="selectedEventIds" multiple>
+                <mat-option *ngFor="let event of events" [value]="event.id">
+                  {{ event.title }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-template #noEvents>
+          <p style="margin-top: 1rem;">No hay eventos sin encuesta asignada.</p>
+        </ng-template>
+      </ng-container>
+
+      <ng-container modal-footer>
+        <div>
+          <small>ID: {{selectedSurvey.id}}</small>
+        </div>
+      </ng-container>
+    </app-modal>
+
+    <!-- Modal to delete surveys -->
+    <app-modal *ngIf="isDeleteModalOpened" (closeModal)="closeDeleteModal()"
+      (submitModal)="submitDeleteModal(selectedSurvey?.id)" [showSubmitBtn]="true" [isSubmittingChanges]="isSubmitting">
+      <ng-container modal-header>
+        <div class="modal-header-text">
+          Eliminar encuesta
+        </div>
+      </ng-container>
+      <ng-container modal-body>
+        <div class="eventDeletion-body">
+          ¿Estás seguro de que quieres eliminar la encuesta '{{ selectedSurvey?.title }}'?
+          <br>
+          <small>ID: {{ selectedSurvey?.id }}</small>
+        </div>
+
+      </ng-container>
+      <ng-container modal-footer>
+        <div class="eventDeletion-footer">
+          <small>¡Esta acción no se puede deshacer!</small>
+        </div>
+      </ng-container>
+    </app-modal>
+
+  </div>
+  }
+</div>

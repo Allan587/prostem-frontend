@@ -1,0 +1,260 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 7%;
+  padding-bottom: 7%;
+}
+
+
+.centered-content {
+  display: flex; 
+  text-align: center; 
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.form-container {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 60%;
+}
+
+
+.form-footer {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  align-items: center;
+  gap: 4px;
+}
+
+
+.first-row {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-spacing{
+  margin-top: 7px;
+  margin-bottom: 7px;
+  width: 100%;
+}
+
+
+.form-label{
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+.form-input{
+  display: flex;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 10px;
+  width: 90%;
+}
+
+
+.form-input-hidden {
+  display: none;
+}
+
+
+.form-button{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: #2C2C2C;
+  border: 1px solid;
+  border-radius: 8px;
+  color: #FFF;
+}
+.form-button:hover{
+  background: #FFF;
+  color: #2C2C2C;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.form-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.form-a-tag{
+  font-weight: 500;
+  font-size: 16px;
+  color: #7b7e80;
+}
+.form-a-tag:hover{
+  text-decoration: underline;
+}
+
+.disabled-link {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: #7b7e80;
+}
+
+ /* Upload photo styles */
+.file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-button {
+  background-color: #e0e0e0;
+  border: 1px solid #d9d9d9;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #7b7e80;
+  word-wrap: break-word;
+  text-align: center;
+}
+/* ---------------------------------- */
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: -60px;
+  font-size: 18px;
+  color: #555;
+}
+
+.toggle-password:focus {
+  outline: none;
+}
+
+/* Change spinner color */
+.form-button:hover .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: black;
+}
+
+.form-button .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: white;
+}
+
+/* Medium size screen configuration */
+@media (max-width: 1220px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .first-row {
+    grid-column: span 2;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-container {
+    max-width: 80%;
+  }
+
+  .auth-logo {
+    width: 220px;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Small size screen configuration */
+@media (max-width: 622px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .first-row {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+  }
+
+  /* .form-label {
+    text-align: center;
+    display: block;
+  } */
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .first-row .form-spacing {
+    width: 100%;
+  }
+
+  .first-row mat-form-field {
+    width: 100%;
+  }
+
+  .file-upload-wrapper {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .file-name {
+    text-align: center;
+  }
+
+  .form-container {
+    max-width: 90%;
+  }
+
+  .auth-logo {
+    width: 180px;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+}

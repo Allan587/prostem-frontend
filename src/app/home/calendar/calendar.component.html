@@ -1,0 +1,184 @@
+<div class="main-container">
+  <div *ngIf="userRole() === 'admin'" class="manage-events">
+    <button routerLink="/eventos">
+      <mat-icon style="margin-right: 5px;">settings</mat-icon>
+      Administrar eventos
+    </button>
+  </div>
+  <div class="foo-container">
+    <div class="calendar-container">
+      <div class="calendar">
+        <div class="calendar-headline">
+          <div class="calendar-headline-month">
+            {{ firstDayOfActiveMonth().monthShort }},
+            {{ firstDayOfActiveMonth().year }}
+          </div>
+          <div class="calendar-headline-controls">
+            <div class="calendar-headline-control" (click)="goToPreviuosMonth()" #tooltip="matTooltip"
+              matTooltip="{{previousMonthTooltipText}}" [matTooltipPosition]="'above'"
+              matTooltipHideDelay="{{tooltipDuration}}" aria-label="Botón para ir al mes anterior.">
+              <mat-icon>arrow_back_ios</mat-icon>
+            </div>
+            <div class="calendar-headline-control calendar-headline-control-today" (click)="goToToday()"
+              #tooltip="matTooltip" matTooltip="{{goToTodayTooltipText}}" [matTooltipPosition]="'above'"
+              matTooltipHideDelay="{{tooltipDuration}}" aria-label="Botón para ir al presente día.">
+              Hoy
+            </div>
+            <div class="calendar-headline-control" (click)="goToNextMonth()" #tooltip="matTooltip"
+              matTooltip="{{nextMonthTooltilpText}}" [matTooltipPosition]="'above'"
+              matTooltipHideDelay="{{tooltipDuration}}" aria-label="Botón para ir al mes siguiente.">
+              <mat-icon>arrow_forward_ios</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="calendar-weeks-grid">
+          @for(weekDay of weekDays(); track $index){
+          <div class="calendar-weeks-grid-cell">{{ weekDay }}</div>
+          }
+        </div>
+        <div class="calendar-grid">
+          @for(dayOfMonth of daysOfTheMonth(); track $index){
+          <div [ngClass]="{'calendar-grid-cell': true, 
+          'calendar-grid-cell-active': activeDay()?.toISODate() === dayOfMonth.toISODate(),
+          'calendar-grid-cell-inactive': dayOfMonth.month !== firstDayOfActiveMonth().month,
+          'calendar-grid-cell-today': dayOfMonth.hasSame(today(), 'day'),
+          'calendar-grid-cell-sunday': dayOfMonth.month === firstDayOfActiveMonth().month && dayOfMonth.weekday === 7,
+          'calendar-grid-cell-saturday': dayOfMonth.month === firstDayOfActiveMonth().month && dayOfMonth.weekday === 6
+            }" (click)="selectDay(dayOfMonth)">
+
+            @if (dayOfMonth.toISODate() && hasEventsOnDay(dayOfMonth.toISODate()!)) {
+            <div class="calendar-day-dot"></div>
+            }
+            {{ dayOfMonth.day }}
+          </div>
+          }
+        </div>
+      </div>
+      <div class="schedule">
+        <div class="schedule-headline">
+          @if(activeDay(); as activeDay){
+          <div>{{ activeDay.toLocaleString(DATE_MEDIUM) }}</div>
+          } @else {
+          <div>Selecciona un día</div>
+          }
+        </div>
+
+        <div class="event-itemScroll">
+          @if(activeDay() && activeDayEvents().length === 0){
+          <div style="text-align: center; align-content: center;">No hay eventos para el día seleccionado.</div>
+          }
+
+          @if(activeDay() && activeDayEvents().length > 0){
+          @for (item of activeDayEvents(); track $index) {
+          <div class="event-item" (click)="selectEvent(item)"
+            [ngClass]="{ 'event-item-active': selectedEvent() === item || selectedConference() === item }">
+            <li>
+              {{ item.title }}
+              @if(isConference(item)) {
+              <small style="color: #666; margin-left: 8px;">(Conferencia)</small>
+              }
+            </li>
+          </div>
+          }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Event details card -->
+    <div class="event-details">
+      @if(selectedConference(); as conference) {
+      <h3 style="text-align: center;">{{ conference.title }}</h3>
+      <p><strong>Fecha de inicio:</strong> {{ reformatDate(conference.startDate) }}</p>
+      @if(conference.startDate !== conference.finishDate) {
+      <p><strong>Fecha de finalización:</strong> {{ reformatDate(conference.finishDate) }}</p>
+      }
+      <p><strong>Descripción:</strong> {{ conference.description }}</p>
+      <p><strong>Horario:</strong> {{ conference.startTime }} - {{ conference.finishTime }}</p>
+      <p><strong>Lugar:</strong> {{ conference.place }}</p>
+
+      <div class="event-item-footer">
+        <div class="event-item-actions">
+          <button class="schedule-button" (click)="navigateToNewPresentation(conference.id)">
+            Inscribir una ponencia
+          </button>
+        </div>
+      </div>
+      } 
+      
+      @if(selectedEvent() && !selectedConference()) {
+      <h3 style="text-align: center;">{{ selectedEvent()!.title }}</h3>
+      <p><strong>Fecha de inicio:</strong> {{ reformatDate(selectedEvent()!.startDate) }}</p>
+      @if(selectedEvent()!.startDate !== selectedEvent()!.endDate) {
+      <p><strong>Fecha de finalización:</strong> {{ reformatDate(selectedEvent()!.endDate) }}</p>
+      }
+      @if(selectedEvent()?.enrollmentType === 'Restringida' && !isUserRegistered(selectedEvent()!)){
+      <p><strong>Descripción: </strong> <small>Regístrate para ver</small></p>
+      }@else {
+      <p><strong>Descripción: </strong>{{ selectedEvent()!.description }}</p>
+      }
+      @if(selectedEvent()!.durationHours) {
+      <p><strong>Duración: </strong>{{ selectedEvent()!.durationHours }} h.</p>
+      }
+      <p><strong>Horario:</strong> {{ selectedEvent()!.startTime }} - {{ selectedEvent()!.endTime }}</p>
+      @if(selectedEvent()!.virtualEvent){
+      <p><strong>Modalidad: </strong>virtual.</p>
+      }@else {
+      <p><strong>Modalidad: </strong>presencial.</p>
+      }
+      <p><strong>Áreas de interés:</strong> {{ selectedEvent()!.specialties.join(', ') }}.</p>
+      @if(selectedEvent()?.enrollmentType === 'Restringida' && !isUserRegistered(selectedEvent()!)){
+      <p><strong>Lugar: </strong> <small>Regístrate para ver.</small> </p>
+      }@else {
+      <p *ngIf="selectedEvent()?.enrollmentType === 'Abierta' || 
+        (selectedEvent()?.enrollmentType === 'Restringida' && isUserRegistered(selectedEvent()!))">
+        <strong>Lugar:</strong> {{ selectedEvent()!.place }}
+      </p>
+      }
+
+      <p><strong>Tipo de inscripción:</strong> {{ selectedEvent()!.enrollmentType }}.</p>
+      <p><strong>Tipo de evaluación:</strong> {{ selectedEvent()!.evaluationType }}.</p>
+      <p><strong>Cupo:</strong> {{ selectedEvent()!.capacity === 0 ? 'Ilimitado' : selectedEvent()!.capacity }}.</p>
+
+      <div class="event-item-footer">
+        <div class="event-item-actions">
+          <button class="schedule-button" *ngIf="selectedEvent()?.enrollmentType === 'Abierta'"
+            (click)="registerToTheEvent(selectedEvent()!)"
+            [disabled]="isRegistering() || isUserRegistered(selectedEvent()!) || !canRegister(selectedEvent()!, userUid()!) || eventHasBegun(selectedEvent()!)">
+            {{ isUserRegistered(selectedEvent()!) ? '¡Estás inscrito!' :
+            eventHasBegun(selectedEvent()!) ? 'Evento cerrado.' :
+            (!canRegister(selectedEvent()!, userUid()!)) ? 'Evento lleno.' : 'Inscribirse.' }}
+          </button>
+
+          <button class="schedule-button" *ngIf="showRequestRegisterButton"
+            (click)="requestRegistration(selectedEvent()!)" [disabled]="eventHasBegun(selectedEvent()!) || isRegistering() || userHasRequestedToRegister || 
+        isUserRegistered(selectedEvent()!) || !canRegister(selectedEvent()!, userUid()!)
+        || (userIsAlreadyOnWaitingList && !eventIsFull)">
+            {{ userHasRequestedToRegister ? 'Solicitud enviada.' :
+            isUserRegistered(selectedEvent()!) ? '¡Estás inscrito!' : userIsAlreadyOnWaitingList ? 'En lista de espera.'
+            :
+            eventHasBegun(selectedEvent()!) ? 'Evento cerrado.' : 'Solicitar inscripción.' }}
+          </button>
+
+          <button class="schedule-button" *ngIf="showWaitingListButton" (click)="joinWaitingList(selectedEvent()!)"
+            [disabled]="isRegistering() || userIsAlreadyOnWaitingList">
+            {{ userIsInWaitingList ? 'Estás en lista de espera.' : 'Unirse a la lista de espera.' }}
+          </button>
+        </div>
+
+        <small *ngIf="selectedEvent() as event; else noCapacity">
+          <ng-container *ngIf="event.capacity && event.capacity !== 0">
+            <strong>Espacios disponibles:</strong>
+            {{ event.capacity - event.registeredUsers.length }}
+          </ng-container>
+        </small>
+        <ng-template #noCapacity></ng-template>
+      </div>
+      } 
+      
+      @if(!selectedEvent() && !selectedConference()) {
+      <p style="margin-top: auto; margin-bottom: auto; color: rgb(192, 191, 191);">Selecciona un evento o conferencia para ver su información</p>
+      }
+    </div>
+  </div>
+</div>

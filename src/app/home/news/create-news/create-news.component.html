@@ -1,0 +1,128 @@
+<div class="create-news-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ isEditMode ? 'Editar Noticia' : 'Crear Nueva Noticia' }}
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="newsForm" (ngSubmit)="onSubmit()">
+          <!-- Title Field -->
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Título</mat-label>
+            <input matInput formControlName="title" placeholder="Ingrese el título de la noticia">
+            <mat-error *ngIf="newsForm.get('title')?.hasError('required')">
+              El título es requerido
+            </mat-error>
+            <mat-error *ngIf="newsForm.get('title')?.hasError('minlength')">
+              El título debe tener al menos 3 caracteres
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Content Field -->
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Contenido</mat-label>
+            <textarea 
+              matInput 
+              formControlName="content" 
+              placeholder="Escriba el contenido de la noticia..."
+              rows="8">
+            </textarea>
+            <mat-error *ngIf="newsForm.get('content')?.hasError('required')">
+              El contenido es requerido
+            </mat-error>
+            <mat-error *ngIf="newsForm.get('content')?.hasError('minlength')">
+              El contenido debe tener al menos 10 caracteres
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Existing Images (Edit Mode Only) -->
+          <div *ngIf="isEditMode && existingImages.length > 0" class="existing-images-section">
+            <h3>Imágenes Actuales</h3>
+            <div class="existing-images-grid">
+              <div *ngFor="let imagePath of existingImages; let i = index" class="existing-image-item">
+                <img [src]="getImageUrl(imagePath)" [alt]="'Imagen ' + (i + 1)" class="existing-image">
+                <button 
+                  type="button" 
+                  mat-icon-button 
+                  color="warn"
+                  class="remove-existing-btn"
+                  (click)="removeExistingImage(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+  
+          <!-- New Images Upload -->
+          <div class="image-upload-section">
+            <h3>{{ isEditMode ? 'Agregar Nuevas Imágenes (Opcional)' : 'Imágenes (Opcional)' }}</h3>
+            <input 
+              type="file" 
+              #fileInput
+              multiple 
+              accept="image/*"
+              (change)="onFilesSelected($event)"
+              style="display: none">
+            
+            <button 
+              type="button" 
+              mat-raised-button 
+              color="accent"
+              (click)="fileInput.click()">
+              <mat-icon>add_photo_alternate</mat-icon>
+              Seleccionar Nuevas Imágenes
+            </button>
+            
+            <p class="file-info">
+              {{ isEditMode ? 
+                `Tienes ${existingImages.length} imágenes. Puedes agregar ${10 - existingImages.length} más (máximo 10 total)` : 
+                'Máximo 10 imágenes, 5MB cada una (JPEG, PNG, GIF)' 
+              }}
+            </p>
+  
+            <!-- Selected New Files Preview -->
+            <div *ngIf="selectedFiles.length > 0" class="selected-files">
+              <h4>Nuevos archivos seleccionados:</h4>
+              <div class="file-list">
+                <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
+                  <span>{{ file.name }} ({{ (file.size / 1024 / 1024).toFixed(2) }}MB)</span>
+                  <button 
+                    type="button" 
+                    mat-icon-button 
+                    color="warn"
+                    (click)="removeFile(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button 
+              type="button" 
+              mat-button 
+              (click)="cancel()"
+              [disabled]="isSubmitting">
+              Cancelar
+            </button>
+            
+            <button 
+              type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="newsForm.invalid || isSubmitting">
+              <mat-icon *ngIf="isSubmitting">hourglass_empty</mat-icon>
+              {{ isSubmitting ? 
+                (isEditMode ? 'Actualizando...' : 'Creando...') : 
+                (isEditMode ? 'Actualizar Noticia' : 'Crear Noticia') 
+              }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

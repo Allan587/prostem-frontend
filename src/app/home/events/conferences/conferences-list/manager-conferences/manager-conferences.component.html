@@ -1,0 +1,192 @@
+<div *ngIf="isLoading" class="loading-container">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!isLoading && dataSource.length === 0" class="no-conferences-message">
+  <p>Usted no tiene ninguna conferencia</p>
+</div>
+
+<div *ngIf="!isLoading && dataSource.length > 0">
+  <h1>Gestión de Conferencias</h1>
+  <div class="table_component mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.creationId }}</td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Título</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <!-- Start Date Column -->
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Fecha de Inicio</th>
+        <td mat-cell *matCellDef="let element">{{ element.startDate }}</td>
+      </ng-container>
+
+      <!-- Finish Date Column -->
+      <ng-container matColumnDef="finishDate">
+        <th mat-header-cell *matHeaderCellDef>Fecha de Fin</th>
+        <td mat-cell *matCellDef="let element">{{ element.finishDate }}</td>
+      </ng-container>
+
+      <!-- Estado Column -->
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element">
+          <span [ngClass]="element.active ? 'status-active' : 'status-inactive'">
+            {{ element.active ? 'Activa' : 'Inactiva' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Resultados Column -->
+      <ng-container matColumnDef="resultados">
+        <th mat-header-cell *matHeaderCellDef>Resultados</th>
+        <td mat-cell *matCellDef="let element">
+          {{ getResultadosMessage(element.resultsSent) }}
+        </td>
+      </ng-container>
+
+      <!-- Options Column -->
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef>Opciones</th>
+        <td mat-cell *matCellDef="let element" class="cell-actions">
+          <!-- Edit Button -->
+          <button
+            mat-icon-button
+            matTooltip="Editar conferencia"
+            [disabled]="!element.active"
+            (click)="editConference(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Toggle Active Button -->
+          <button
+            mat-icon-button
+            [matTooltip]="element.active ? 'Deshabilitar conferencia' : 'Habilitar conferencia'"
+            (click)="toggleActive(element)"
+          >
+            <mat-icon>{{ element.active ? 'block' : 'check_circle' }}</mat-icon>
+          </button>
+
+          <!-- Ver Ponencias Button -->
+          <button
+            mat-icon-button
+            matTooltip="Ver Ponencias"
+            (click)="viewPresentations(element)"
+            [disabled]="!element.presentations || element.presentations.length === 0" 
+            >
+            <mat-icon>visibility</mat-icon>
+          </button>
+
+          <!-- Administrar Formulario de Revisión Button -->
+          <button
+            mat-icon-button
+            matTooltip="Administrar Formulario de Revisión"
+            (click)="viewAvailableforms(element)"
+          >
+            <mat-icon>assignment</mat-icon>
+          </button>
+
+          <!-- Enviar Resultados Button -->
+          <button
+          mat-icon-button
+          [matTooltip]="getResultsButtonTooltip(element.resultsSent)"
+          (click)="updateResultsSent(element)"
+          [disabled]="element.resultsSent === 3 || element.presentations.length === 0"
+          >
+          <mat-icon>send</mat-icon>
+          </button>
+
+          <!-- Certificate Buttons (Time-Restricted) -->
+          
+          <!-- Download Certificates Button -->
+          <button 
+            mat-icon-button 
+            color="primary"
+            [matTooltip]="getCertificateButtonTooltip(element, 'Descargar certificados de participación sin firma')"
+            [disabled]="!isConferenceEnded(element)"
+            (click)="downloadCertificates(element)">
+            <mat-icon>download</mat-icon>
+          </button>
+
+          <!-- Upload Signed Certificates Button -->
+          <button 
+            mat-icon-button 
+            color="accent"
+            [matTooltip]="getCertificateButtonTooltip(element, 'Subir certificados firmados')"
+            [disabled]="!isConferenceEnded(element)"
+            (click)="triggerCertificateUpload(element)">
+            <mat-icon>upload</mat-icon>
+          </button>
+
+          <!-- Send Certificates Button -->
+          <button 
+            mat-icon-button 
+            color="warn"
+            [matTooltip]="getCertificateButtonTooltip(element, 'Enviar certificados por email')"
+            [disabled]="!isConferenceEnded(element)"
+            (click)="sendCertificates(element)">
+            <mat-icon>email</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ADD ONLY THIS MODAL AT THE END -->
+<app-modal *ngIf="isResultsModalOpened" 
+           (closeModal)="closeResultsModal()"
+           (submitModal)="confirmSendResults()" 
+           [showSubmitBtn]="true" 
+           [isSubmittingChanges]="isSubmittingResults">
+  <ng-container modal-header>
+    <div class="modal-header-text">
+      {{ isSubmittingResults ? 'Enviando Resultados' : 'Confirmar envío de resultados' }}
+    </div>
+  </ng-container>
+  <ng-container modal-body>
+    <div class="confirmation-body">
+      <!-- Loading State -->
+      <div *ngIf="isSubmittingResults" class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p style="margin-top: 15px; text-align: center; color: #007bff;">
+          Enviando resultados, por favor espera...
+        </p>
+      </div>
+
+      <!-- Confirmation State -->
+      <div *ngIf="!isSubmittingResults">
+        ¿Estás seguro de que quieres enviar los {{ getNextResultsType(selectedConference?.resultsSent) }} para esta conferencia?
+        <br><br>
+        <strong>Conferencia:</strong> {{ selectedConference?.title }}<br>
+        <strong>ID:</strong> {{ selectedConference?.creationId }}<br>
+        <strong>Estado actual:</strong> {{ getResultadosMessage(selectedConference?.resultsSent) }}<br>
+        <strong>Acción:</strong> Enviar {{ getNextResultsType(selectedConference?.resultsSent) }}
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <div class="confirmation-footer">
+      <small *ngIf="!isSubmittingResults">Esta acción actualizará el estado de los resultados.</small>
+      <small *ngIf="isSubmittingResults" style="color: #007bff;">Procesando envío...</small>
+    </div>
+  </ng-container>
+</app-modal>

@@ -1,0 +1,6 @@
+<button class="google-button" [type]="type" [disabled]="disabled" (click)="onClick.emit()">
+  <img [src]="googleIcon" alt="Google icon" *ngIf="!disabled || buttonClicked==='email-password'">
+  <mat-spinner *ngIf="disabled && buttonClicked==='google'" diameter="20" color="accent"
+    style="margin-right: 8px; vertical-align: middle;" />
+  <span style="font-size: small; margin-left: 1rem;">{{buttonText}}</span>
+</button>

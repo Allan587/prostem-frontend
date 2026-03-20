@@ -1,0 +1,109 @@
+<div class="reviewers-panel-container">
+
+  <button mat-raised-button color="primary" class="create-button" (click)="createNewReviewer()">
+    Crear nuevo revisor
+  </button>
+
+  <h1>Lista de Usuarios (Candidatos a Revisores)</h1>
+  
+  <div *ngIf="dataSource.length === 0">
+    <p>No se encontraron usuarios candidatos a revisores.</p>
+  </div>
+  
+  <div *ngIf="dataSource.length > 0" class="table_component mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-table">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+
+      <!-- Institution Column -->
+      <ng-container matColumnDef="institution">
+        <th mat-header-cell *matHeaderCellDef>Institución</th>
+        <td mat-cell *matCellDef="let element">{{ element.institution }}</td>
+      </ng-container>
+
+      <!-- Areas Column -->
+      <ng-container matColumnDef="areas">
+        <th mat-header-cell *matHeaderCellDef>Áreas</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline" class="area-select">
+            <mat-select [placeholder]="element.areas[0] || 'No areas'" (selectionChange)="$event.source.writeValue(null)">
+              <mat-option *ngFor="let area of element.areas" [value]="area">
+                {{ area }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Options Column -->
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef>Opciones</th>
+        <td mat-cell *matCellDef="let element">
+          <button 
+            mat-raised-button 
+            color="primary"
+            (click)="makeReviewer(element)"
+            [disabled]="isUserBeingProcessed(element.id)"
+            matTooltip="Convertir usuario en revisor">
+            <mat-icon>person_add</mat-icon>
+            {{ isUserBeingProcessed(element.id) ? 'Procesando...' : 'Hacer revisor' }}
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header and Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <!-- ADD THIS MODAL AT THE END -->
+  <app-modal *ngIf="isConfirmationModalOpened" 
+             (closeModal)="closeConfirmationModal()"
+             (submitModal)="confirmMakeReviewer()" 
+             [showSubmitBtn]="true" 
+             [isSubmittingChanges]="isSubmitting">
+    <ng-container modal-header>
+      <div class="modal-header-text">
+        {{ isSubmitting ? 'Convirtiendo a Revisor' : 'Confirmar conversión a revisor' }}
+      </div>
+    </ng-container>
+    <ng-container modal-body>
+      <div class="confirmation-body">
+        <!-- Loading State -->
+        <div *ngIf="isSubmitting" class="loading-container">
+          <mat-spinner diameter="40" color="primary"></mat-spinner>
+          <p style="margin-top: 15px; text-align: center; color: #007bff;">
+            Convirtiendo usuario a revisor, por favor espera...
+          </p>
+        </div>
+
+        <!-- Confirmation State -->
+        <div *ngIf="!isSubmitting">
+          ¿Estás seguro de que quieres convertir a este usuario en revisor?
+          <br><br>
+          <strong>Nombre:</strong> {{ selectedUser?.name }}<br>
+          <strong>Email:</strong> {{ selectedUser?.email }}<br>
+          <strong>Institución:</strong> {{ selectedUser?.institution }}<br>
+          <strong>Áreas:</strong> {{ selectedUser?.areas?.join(', ') || 'Sin áreas asignadas' }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-container modal-footer>
+      <div class="confirmation-footer">
+        <small *ngIf="!isSubmitting">El usuario obtendrá permisos de revisor.</small>
+        <small *ngIf="isSubmitting" style="color: #007bff;">Actualizando permisos...</small>
+      </div>
+    </ng-container>
+  </app-modal>
+</div>

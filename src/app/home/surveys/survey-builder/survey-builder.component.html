@@ -1,0 +1,97 @@
+<h1 style="display: flex; text-align: center; flex-direction: column;">
+  Crear encuesta
+</h1>
+<div class="survey-container">
+  <form [formGroup]="surveyForm" (ngSubmit)="submitSurvey()">
+    <div class="title-container">
+      <label>Título de la encuesta</label>
+      <input matInput formControlName="title" placeholder="Ingresa el título de la encuesta" style="width: 80%;" />
+      @if (fieldIsEmpty('title', surveyForm)) {
+      <small style="color: rgb(255, 73, 73);">Debes ingresar un título a la encuesta.</small>
+      }
+      @else if (fieldIsTooShort('title', surveyForm)) {
+      <small style="color: rgb(255, 73, 73);">
+        El título debe tener al menos {{minTitleLength}} caracteres.
+      </small>
+      }
+      @else if (fieldIsTooLong('title', surveyForm)) {
+      <small style="color: rgb(255, 73, 73);">
+        Ingresa un título con menos de {{maxTitleLength}} caracteres.
+      </small>
+      }
+      @else if (fieldHasPatternError('title', surveyForm)) {
+      <small style="color: rgb(255, 73, 73);">
+        Caracter inválido.
+      </small>
+      }
+    </div>
+
+    <div class="question-card" *ngFor="let question of questions.controls; let i = index" [formGroup]="question">
+      <div class="card-header">
+        <label>Pregunta {{i+1}}</label>
+        <!-- Delete question button -->
+        <button *ngIf="questions.length > 1" type="button" (click)="removeQuestion(i)" aria-label="Eliminar pregunta"
+          #tooltip="matTooltip" matTooltip="{{deleteElementTooltipText}}" [matTooltipPosition]="'above'"
+          matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Botón para eliminar una pregunta y que muestra un tooltip.">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <div class="card-content">
+        <input matInput formControlName="title" placeholder="Escribe la pregunta" />
+        @if (fieldIsEmpty('title', question)) {
+        <small style="color: rgb(255, 73, 73);">Debes ingresar un título a la pregunta.</small>
+        }
+        @else if (fieldIsTooShort('title', question)) {
+        <small style="color: rgb(255, 73, 73);">
+          La pregunta debe tener al menos {{minTitleLength}} caracteres.
+        </small>
+        }
+        @else if (fieldIsTooLong('title', question)) {
+        <small style="color: rgb(255, 73, 73);">
+          Ingresa una pregunta con menos de {{maxTitleLength}} caracteres.
+        </small>
+        }
+        @else if (fieldHasPatternError('title', question)) {
+        <small style="color: rgb(255, 73, 73);">
+          Caracter inválido.
+        </small>
+        }
+      </div>
+
+      <div class="type-select-container">
+        <mat-form-field appearance="fill">
+          <mat-label>Tipo de pregunta</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let type of questionTypes" [value]="type.value">
+              {{ type.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="options-container"
+        *ngIf="question.get('type')?.value === 'checkbox' || question.get('type')?.value === 'radiogroup'">
+        <small>Ingresa las opciones separadas por coma o punto y coma</small>
+        <input matInput formControlName="choicesInput" (input)="onChoicesInputChange(i)"
+          placeholder="Ej.: Opcion 1,Opcion2,Opción3,..." style="width: 50%;" />
+        <!-- Tell the user they must add at least one option -->
+        <div *ngIf="question.errors?.choicesRequired && question.touched" style="color: red;">
+          <small>Las opciones deben ser válidas, únicas y no vacías para esta pregunta.</small>
+        </div>
+      </div>
+    </div>
+    <!-- Botones de acción -->
+    <div class="button-row">
+      <button class="action-button" type="button" (click)="addQuestion()" [disabled]="isSaving">
+        <mat-icon>add</mat-icon> Agregar pregunta
+      </button>
+
+      <button class="action-button" type="submit" [disabled]="surveyForm.invalid || isSaving">
+        <mat-icon>save</mat-icon> Guardar encuesta
+      </button>
+    </div>
+
+  </form>
+</div>

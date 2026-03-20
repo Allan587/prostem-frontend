@@ -1,0 +1,95 @@
+<div class="new-conference-form">
+  <h1>{{ isEditMode ? 'Editar Conferencia' : 'Crear Nueva Conferencia' }}</h1>
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+      <div class="form-group">
+        <label for="title">Título</label>
+        <input id="title" type="text" formControlName="title" placeholder="Ingrese el título" />
+        <small *ngIf="form.get('title')?.invalid && form.get('title')?.touched">
+          El título es obligatorio y debe tener entre 5 y 100 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="startDate">Fecha de inicio</label>
+        <input id="startDate" type="date" formControlName="startDate" />
+        <small *ngIf="form.get('startDate')?.invalid && form.get('startDate')?.touched">
+          La fecha de inicio es obligatoria.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="finishDate">Fecha de cierre</label>
+        <input id="finishDdate" type="date" formControlName="finishDate" />
+        <small *ngIf="form.get('finishDate')?.invalid && form.get('finishDate')?.touched">
+          La fecha de cierre es obligatoria.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="startTime">Hora de inicio</label>
+        <input id="startTime" type="time" formControlName="startTime" />
+        <small *ngIf="form.get('startTime')?.invalid && form.get('startTime')?.touched">
+          La hora de inicio es obligatoria.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="finishTime">Hora de cierre</label>
+        <input id="finishTime" type="time" formControlName="finishTime" />
+        <small *ngIf="form.get('finishTime')?.invalid && form.get('finishTime')?.touched">
+          La hora de cierre es obligatoria.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="place">Lugar</label>
+        <input id="place" type="text" formControlName="place" placeholder="Ingrese el lugar" />
+        <small *ngIf="form.get('place')?.invalid && form.get('place')?.touched">
+          El lugar es obligatorio.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="placeLink">Link del lugar (opcional)</label>
+        <input id="placeLink" type="text" formControlName="placeLink" placeholder="Ingrese el link del lugar" />
+      </div>
+  
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea id="description" formControlName="description" placeholder="Ingrese la descripción"></textarea>
+        <small *ngIf="form.get('description')?.invalid && form.get('description')?.touched">
+          La descripción es obligatoria y debe tener entre 10 y 500 caracteres.
+        </small>
+      </div>
+  
+        <button type="submit" [disabled]="form.invalid">
+          {{ isEditMode ? 'Actualizar Conferencia' : 'Crear Conferencia' }}
+        </button>  
+      </form>
+  </div>
+
+<app-modal *ngIf="isCreatingModalOpened" 
+           (closeModal)="closeCreatingModal()"
+           [showSubmitBtn]="false" 
+           [isSubmittingChanges]="isSubmittingConference">
+  <ng-container modal-header>
+    <div class="modal-header-text">
+      {{ isEditMode ? 'Actualizando Conferencia' : 'Creando Conferencia' }}
+    </div>
+  </ng-container>
+  <ng-container modal-body>
+    <div class="confirmation-body">
+      <div class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p style="margin-top: 15px; text-align: center; color: #007bff;">
+          {{ isEditMode ? 'Actualizando conferencia, por favor espera...' : 'Creando conferencia, por favor espera...' }}
+        </p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <div class="confirmation-footer">
+      <small style="color: #007bff;">Procesando...</small>
+    </div>
+  </ng-container>
+</app-modal>

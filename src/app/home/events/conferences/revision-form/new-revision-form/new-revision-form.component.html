@@ -1,0 +1,72 @@
+<div class="new-revision-form-container">
+  <h1>Crear Nuevo Formulario de Revisión</h1>
+
+  <div class="add-question-buttons">
+    <button (click)="addQuestion('single')">Agregar Pregunta de Opción Única</button>
+    <button (click)="addQuestion('multiple')">Agregar Pregunta de Opción Múltiple</button>
+    <button (click)="addQuestion('text')">Agregar Pregunta de Texto</button>
+  </div>
+
+  <div class="question-list">
+    <h2>Preguntas</h2>
+
+    <!-- List of Questions -->
+    <div *ngFor="let question of questions; let i = index; trackBy: trackByIndex" class="question">
+      <h3>
+        {{ question.type === 'single' ? 'Pregunta de Opción Única' : question.type === 'multiple' ? 'Pregunta de Opción Múltiple' : 'Pregunta de Texto' }}
+      </h3>
+      <input
+        type="text"
+        [(ngModel)]="question.text"
+        placeholder="Escribe tu pregunta aquí"
+      />
+
+      <!-- Options for Single/Multiple Choice Questions -->
+      <div *ngIf="question.type !== 'text'" class="options">
+        <div *ngFor="let option of question.options; let j = index; trackBy: trackByIndex" class="option">
+          <input
+            type="text"
+            [(ngModel)]="question.options[j]"
+            placeholder="Escribe una opción"
+          />
+          <button (click)="removeOption(question, j)" class="remove-option">Eliminar</button>
+        </div>
+        <button (click)="addOption(question)" class="add-option">Agregar Opción</button>
+      </div>
+
+      <button (click)="removeQuestion(i)" class="remove-question">Eliminar Pregunta</button>
+    </div>
+  </div>
+
+  <!-- Save Form Button -->
+  <div class="save-form-button">
+    <button (click)="saveForm()">Crear Formulario</button>
+  </div>
+</div>
+
+<!-- ADD THIS MODAL AT THE END -->
+<app-modal *ngIf="isCreatingModalOpened" 
+         (closeModal)="closeCreatingModal()"
+         [showSubmitBtn]="false" 
+         [isSubmittingChanges]="isSubmittingForm">
+<ng-container modal-header>
+  <div class="modal-header-text">
+    Creando Formulario
+  </div>
+</ng-container>
+<ng-container modal-body>
+  <div class="confirmation-body">
+    <div class="loading-container">
+      <mat-spinner diameter="40" color="primary"></mat-spinner>
+      <p style="margin-top: 15px; text-align: center; color: #007bff;">
+        Creando formulario, por favor espera...
+      </p>
+    </div>
+  </div>
+</ng-container>
+<ng-container modal-footer>
+  <div class="confirmation-footer">
+    <small style="color: #007bff;">Procesando...</small>
+  </div>
+</ng-container>
+</app-modal>

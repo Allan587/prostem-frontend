@@ -1,0 +1,37 @@
+.center-google-app{
+  justify-content: center;
+}
+
+.google-button{
+  display: flex;
+  justify-content: center;
+  margin-left: 1%;
+  margin-right: 1%;
+  font-weight: 500;
+  color: white;
+  background: #2C2C2C;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.google-button:hover{
+  background: white;
+  color: #2C2C2C;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.google-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Change spinner color */
+.google-button:hover .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: black;
+}
+
+.google-button .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: white;
+}

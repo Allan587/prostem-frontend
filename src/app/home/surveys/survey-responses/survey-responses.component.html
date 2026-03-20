@@ -1,0 +1,68 @@
+@if(isLoading()){
+<div class="spinner-container">
+  <mat-spinner></mat-spinner>
+  Cargando respuestas...
+</div>
+}@else {
+<h1 class="survey-title">Respuestas de '{{ surveyTitle }}'</h1>
+<div class="table_component mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" class="full-width-table">
+
+    <!-- UID -->
+    <ng-container matColumnDef="uid">
+      <th mat-header-cell *matHeaderCellDef>UID</th>
+      <td mat-cell *matCellDef="let row" class="uid">{{ row.uid }}</td>
+    </ng-container>
+
+    <!-- Nombre -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+    </ng-container>
+
+    <!-- Correo electrónico -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Correo</th>
+      <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+    </ng-container>
+
+
+    <!-- Respuestas -->
+    <ng-container matColumnDef="answers">
+      <th mat-header-cell *matHeaderCellDef>Respuestas</th>
+      <td mat-cell *matCellDef="let row">
+        <div class="answer-cell">
+          <!-- <pre>{{ row.answers | json }}</pre> -->
+          <ul style="padding-left: 1rem;">
+            <li *ngFor="let key of objectKeys(row.answers)">
+              <strong>{{ key }}: </strong>
+              <span *ngIf="isArray(row.answers[key]); else single">
+                {{ row.answers[key].join(', ') }}
+              </span>
+              <ng-template #single>{{ row.answers[key] }}</ng-template>
+            </li>
+          </ul>
+        </div>
+
+      </td>
+    </ng-container>
+
+    <!-- Fecha de la respuesta -->
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef>Respondió el</th>
+      <td mat-cell *matCellDef="let row" class="date">
+        {{ row.createdAt | date: 'medium' }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <div *ngIf="dataSource.data.length === 0" style="text-align: center; margin-top: 1rem;">
+    No hay respuestas registradas para esta encuesta.
+  </div>
+
+  <mat-paginator [pageSize]="answersPerPage" [pageSizeOptions]="[1]" showFirstLastButtons></mat-paginator>
+</div>
+}

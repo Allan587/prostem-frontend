@@ -1,0 +1,89 @@
+<mat-accordion class="headers-align">
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> Eventos </mat-panel-title>
+      <mat-panel-description>
+        {{panelOpenState() ? '' : 'Expande para ver más información.'}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+      <div class="downloadButton-container">
+        <button (click)="downloadCSV()" #tooltip="matTooltip" matTooltip="{{downloadDataTooltipText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Botón para descargar los datos y que muestra un tooltip.">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+
+      <div class="charts-container">
+        <!-- Gráfico: Tipo de inscripción -->
+        <mat-card class="charts-card">
+          <h3>Tipo de inscripción</h3>
+          <canvas baseChart [data]="enrollmentChart()" [options]="{ responsive: true }" chartType="doughnut">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Tipo de evaluación -->
+        <mat-card class="charts-card">
+          <h3>Tipo de evaluación</h3>
+          <canvas baseChart [data]="evaluationTypeChart()" [options]="{ responsive: true }" chartType="doughnut">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Modalidad -->
+        <mat-card class="charts-card">
+          <h3>Modalidad</h3>
+          <canvas baseChart [data]="modalityChart()" [options]="{ responsive: true }" chartType="doughnut">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Categorías -->
+        <mat-card class="charts-card">
+          <h3>Categorías de evento</h3>
+          <canvas baseChart [data]="categoriesChart()" [options]="{ responsive: true, indexAxis: 'y' }" chartType="bar">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Encuestas -->
+        <mat-card class="charts-card">
+          <h3>Eventos con/sin encuesta</h3>
+          <canvas baseChart [data]="surveyChart()" [options]="{ responsive: true }" chartType="doughnut">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Capacidad vs Inscripciones -->
+        <mat-card class="charts-card">
+          <h3>Cupos ofrecidos vs usados</h3>
+          <canvas baseChart [data]="capacityChart()" [options]="{ responsive: true }" chartType="bar">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Top 5 eventos con mayor participación -->
+        <mat-card class="charts-card">
+          <h3>Eventos con mayor participación</h3>
+          <canvas baseChart [data]="topEventsChart()" [options]="{ responsive: true, indexAxis: 'y' }" chartType="bar">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Especialidades más frecuentes -->
+        <mat-card class="charts-card">
+          <h3>Especialidades más frecuentes</h3>
+          <canvas baseChart [data]="specialtiesChart()" [options]="{ responsive: true, indexAxis: 'y' }"
+            chartType="bar">
+          </canvas>
+        </mat-card>
+
+        <!-- Gráfico: Distribución mensual -->
+        <mat-card class="charts-card">
+          <h3>Eventos por mes</h3>
+          <canvas baseChart [data]="monthlyChart()" [options]="{ responsive: true }" chartType="bar">
+          </canvas>
+        </mat-card>
+      </div>
+
+
+    </ng-template>
+
+  </mat-expansion-panel>
+</mat-accordion>

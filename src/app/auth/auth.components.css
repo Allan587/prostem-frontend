@@ -1,0 +1,138 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100vh;
+}
+
+.auth-background{
+  background: rgb(255, 255, 255);
+}
+
+.auth-form{
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 8px;
+}
+
+.form-spacing{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.form-label{
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.form-input{
+  display: flex;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 10px;
+  width: 90%;
+}
+
+.form-button{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: #2C2C2C;
+  border: 1px solid;
+  border-radius: 8px;
+  color: #FFF;
+}
+
+.form-a-tag{
+  font-weight: 500;
+  font-size: 16px;
+  color: #7b7e80;
+}
+
+.disabled-link {
+  cursor: not-allowed;
+  text-decoration: none;
+  color: #7b7e80;
+}
+
+.form-a-tag:hover{
+  text-decoration: underline;
+}
+
+.form-button:hover{
+  background: #FFFF;
+  color: #2C2C2C;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  --mdc-circular-progress-active-indicator-color: black;
+}
+
+.form-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: -60px;
+  color: #555;
+}
+
+.toggle-password:focus {
+  outline: none;
+}
+
+
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 3% 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid #ccc;
+  margin: 0 10px;
+}
+
+.divider span {
+  color: #666;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+@media (max-width: 975px) {
+  .auth-logo {
+    width: 250px;
+    height: 62px;
+    max-width: 250px;
+    max-height: 62px;
+  }
+  .modal {
+    max-width: 330px;
+  }
+}

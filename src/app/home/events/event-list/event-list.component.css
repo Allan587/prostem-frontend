@@ -1,0 +1,106 @@
+.event-list-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.event-list-button {
+  min-width: 30px;
+}
+
+.table_component {
+  justify-content: center;
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  /* padding-right: 10px;
+  padding-left: 10px; */
+}
+
+.table_component table {
+  border: 0.1px solid #dededf;
+  height: 100%;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 2px;
+  text-align: left;
+  table-layout: fixed;
+}
+
+.table_component caption {
+  caption-side: top;
+  text-align: right;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.table_component th {
+  border: 0.1px solid #dededf;
+  background-color: #2c2c2c;
+  color: #D9D9D9;
+  padding: 10px;
+}
+
+.table_component td {
+  border: 0.1px solid #dededf;
+  background-color: #ffffff;
+  color: #2C2C2C;
+  padding: 10px;
+  white-space: normal;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+/* Styles for the modal window */
+.modal-header-text {
+  font-size: 20px;
+}
+
+.request-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.user-id {
+  word-break: break-word;
+  max-width: 70%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: black;
+}
+
+.actions button:hover {
+  color: #1940E7;
+  background: #dededf;
+}
+
+.processRequests-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.eventDeletion-body{
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.eventDeletion-footer{
+  display: flex;
+  justify-content: flex-end;
+  color: red;
+}

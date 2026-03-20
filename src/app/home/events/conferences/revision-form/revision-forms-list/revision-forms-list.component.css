@@ -1,0 +1,105 @@
+/* Center the container and add spacing */
+.revision-forms-list-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Style the table container */
+.forms-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+/* Style the table */
+table {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Style the table header */
+th {
+  border: 0.1px solid #dededf;
+  background-color: #000000 !important; /* Ensure the background is black */
+  color: #ffffff !important; /* Ensure the text is white */
+  padding: 10px;
+  text-align: left;
+  font-weight: bold; /* Make the text bold */
+}
+
+/* Style the table cells */
+td {
+  border: 0.1px solid #dededf;
+  background-color: #ffffff; /* Ensure the cells have a white background */
+  color: #2C2C2C; /* Ensure the text is dark */
+  padding: 10px;
+  white-space: normal;
+}
+
+/* Style the material form field */
+mat-form-field {
+  width: 100%;
+}
+
+/* Center the content in the ID column */
+table td.mat-column-id, 
+table th.mat-column-id {
+  text-align: center;
+}
+
+/* Style the cell actions */
+.cell-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Style the action icons */
+.cell-actions mat-icon {
+  cursor: pointer;
+  color: #2c2c2c;
+  transition: color 0.3s;
+}
+
+.cell-actions mat-icon:hover {
+  color: #1940E7;
+}
+
+/* Add bold styles for active/inactive statuses */
+.status-active {
+  font-weight: bold;
+}
+
+.status-inactive {
+  font-weight: bold;
+}
+
+/* Center the content in all columns */
+table td, 
+table th {
+  text-align: center; /* Center the text horizontally */
+  vertical-align: middle; /* Center the text vertically */
+}
+
+/* Style the toggle column */
+table td.mat-column-toggle, 
+table th.mat-column-toggle {
+  text-align: center; /* Center the toggle button */
+  vertical-align: middle;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.loading-container p {
+  margin-top: 16px;
+  color: #666;
+}

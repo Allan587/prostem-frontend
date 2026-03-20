@@ -1,0 +1,63 @@
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+.downloadButton-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.downloadButton-container button {
+  background-color: transparent;
+  color: black;
+}
+
+.downloadButton-container button:hover {
+  background-color: #ebebeb;
+  color: #3BB12F;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1.5rem;
+  min-height: 200px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.charts-card {
+  background-color: #fafafa;
+  padding: 15px;
+  min-width: 100px;
+  width: 450px;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+
+
+/* Small size screen configuration */
+@media (max-width: 559px) {
+  .headers-align .mat-expansion-panel-header-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 478px) {
+  .headers-align .mat-expansion-panel-header-description {
+    font-size: 10px;
+  }
+
+  .downloadButton-container {
+    justify-content: center;
+  }
+}

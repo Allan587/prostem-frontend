@@ -1,0 +1,78 @@
+<div class="conferences-reviewer-container">
+    <h1>Conferencias Asignadas como Revisor</h1>
+  
+    <!-- Show spinner while loading -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+      <p>Cargando conferencias...</p>
+    </div>
+  
+    <!-- Show table when conferences are loaded -->
+    <div *ngIf="!isLoading && dataSource.length > 0" class="table_component mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" class="mat-table">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+  
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Título</th>
+          <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+        </ng-container>
+  
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Descripción</th>
+          <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+        </ng-container>
+  
+        <!-- Start Date Column -->
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>Fecha de Inicio</th>
+          <td mat-cell *matCellDef="let element">{{ element.startDate }}</td>
+        </ng-container>
+  
+        <!-- Finish Date Column -->
+        <ng-container matColumnDef="finishDate">
+          <th mat-header-cell *matHeaderCellDef>Fecha de Fin</th>
+          <td mat-cell *matCellDef="let element">{{ element.finishDate }}</td>
+        </ng-container>
+  
+        <!-- Estado Column -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            <span [ngClass]="element.active ? 'status-active' : 'status-inactive'">
+              {{ element.active ? 'Activa' : 'Inactiva' }}
+            </span>
+          </td>
+        </ng-container>
+  
+        <!-- Options Column -->
+        <ng-container matColumnDef="options">
+            <th mat-header-cell *matHeaderCellDef>Opciones</th>
+            <td mat-cell *matCellDef="let element" class="cell-actions">
+            <!-- View Presentations Button -->
+            <button
+                mat-icon-button
+                matTooltip="Ver ponencias asignadas en esta conferencia"
+                (click)="navigateToPresentations(element.id)"
+            >
+                <mat-icon>visibility</mat-icon>
+            </button>
+            </td>
+        </ng-container>
+  
+        <!-- Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  
+    <!-- Show message if no conferences are assigned -->
+    <div *ngIf="!isLoading && dataSource.length === 0">
+      <p>Usted no ha sido asignado como revisor de ninguna conferencia hasta el momento</p>
+    </div>
+  </div>

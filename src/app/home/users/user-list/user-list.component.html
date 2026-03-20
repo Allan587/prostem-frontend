@@ -1,0 +1,146 @@
+@if(isLoadingUsers){
+<div class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+}@else {
+<div class="table_component mat-elevation-z8" role="region" tabindex="0">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-table" multiTemplateDataRows>
+
+    <!-- ID -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+    </ng-container>
+
+    <!-- Nombre -->
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let user">{{ user.fullName }}</td>
+    </ng-container>
+
+    <!-- Rol -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Rol</th>
+      <td mat-cell *matCellDef="let user">{{ user.role === 'admin' ? 'Administrador' : user.role === 'user' ? 'Docente'
+        : '??' }}</td>
+    </ng-container>
+
+    <!-- Correo electrónico -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Correo electrónico</th>
+      <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+    </ng-container>
+
+    <!-- Fecha de nacimiento -->
+    <ng-container matColumnDef="birthDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de nacimiento</th>
+      <td mat-cell *matCellDef="let user">{{ user.birthDate }}</td>
+    </ng-container>
+
+    <!-- Lugar de trabajo -->
+    <ng-container matColumnDef="institution">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Lugar de trabajo</th>
+      <td mat-cell *matCellDef="let user">{{ user.institution }}</td>
+    </ng-container>
+
+    <!-- Teléfono -->
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+      <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
+    </ng-container>
+
+    <!-- Nivel de enseñanza -->
+    <ng-container matColumnDef="teachingLevel">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nivel de enseñanza</th>
+      <td mat-cell *matCellDef="let user">{{ user.teachingLevel }}</td>
+    </ng-container>
+
+    <!-- Especializaciones -->
+    <ng-container matColumnDef="specializations">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Especializaciones</th>
+      <td mat-cell *matCellDef="let user">{{ user.specializations.length ? user.specializations : 'N/A' }}</td>
+    </ng-container>
+
+    <!-- Opciones -->
+    <!-- Agregar la opcion de ver solicitudes, sera un modal que tenga la lista o algo asi -->
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef style="text-align: center">Opciones</th>
+      <td mat-cell *matCellDef="let user" class="cell-actions">
+        <a (click)="openUserToAdminModal(user)" #tooltip="matTooltip" matTooltip="{{changeUserRoleTooltipText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Anchor para cambiar el rol del usuario y que muestra un tooltip.">
+          <mat-icon>manage_accounts</mat-icon>
+        </a>
+        <a (click)="openDeleteModal(user)" #tooltip="matTooltip" matTooltip="{{deleteUserTooltilpText}}"
+          [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+          aria-label="Anchor para eliminar el usuario y que muestra un tooltip.">
+          <mat-icon>delete</mat-icon>
+        </a>
+    </ng-container>
+
+    <!-- Header y Rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+<div>
+  <div *ngIf="dataSource.data.length === 0">
+    No hay usuarios registrados.
+  </div>
+  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+  </mat-paginator>
+  <!-- Modal to promote users to admins -->
+  <app-modal *ngIf="isUserToAdminModalOpened" (closeModal)="closeUserToAdminModal()"
+    (submitModal)="submitUserToAdminModal(selectedUser.id)" [showSubmitBtn]="true" [isSubmittingChanges]="isSubmitting">
+    <ng-container modal-header>
+      <div class="modal-header-text">
+        Cambiar rol del usuario
+      </div>
+    </ng-container>
+    <ng-container modal-body>
+      <div>
+        <p><strong>Usuario:</strong> {{ selectedUser.fullName }}</p>
+        <div class="make-select-wider">
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Rol</mat-label>
+            <mat-select [(value)]="selectedRole">
+              <mat-option *ngFor="let role of roles" [value]="role.value">
+                {{ role.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </ng-container>
+    <!-- <ng-container modal-footer>
+      <div class="eventDeletion-footer">
+        <small>¡Esta acción no se puede deshacer!</small>
+      </div>
+    </ng-container> -->
+  </app-modal>
+
+  <!-- Modal to delete users -->
+  <app-modal *ngIf="isDeleteModalOpened" (closeModal)="closeDeleteModal()"
+    (submitModal)="submitDeleteModal(selectedUser.id)" [showSubmitBtn]="true" [isSubmittingChanges]="isSubmitting">
+    <ng-container modal-header>
+      <div class="modal-header-text">
+        Eliminar usuario
+      </div>
+    </ng-container>
+    <ng-container modal-body>
+      <div class="eventDeletion-body">
+        ¿Estás seguro de que quieres eliminar el usuario '{{ selectedUser.fullName }}'?
+        <br>
+        <small>ID: {{ selectedUser.id }}</small>
+      </div>
+
+    </ng-container>
+    <ng-container modal-footer>
+      <div class="eventDeletion-footer">
+        <small>¡Esta acción no se puede deshacer!</small>
+      </div>
+    </ng-container>
+  </app-modal>
+</div>
+}

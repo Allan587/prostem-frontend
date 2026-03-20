@@ -1,0 +1,276 @@
+<section class="auth-container">
+  <div class="centered-content">
+    <img class="auth-logo" src="{{logoPath}}" alt="ProSTEM logo with label" aria-hidden="true">
+  </div>
+  <div>
+    <h1 class="centered-content">
+      Crea tu cuenta
+    </h1>
+    <div class="form-container">
+      <form class="form-grid" [formGroup]="form">
+        <div class="first-row">
+
+          <!-- Método de registro -->
+          <div class="form-spacing">
+            <label for="signUpMethod" class="form-label">
+              Método de registro <small style="color: rgb(255, 73, 73);">*</small>
+            </label>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Selecciona</mat-label>
+              <mat-select (selectionChange)="onRegisterMethodChange($event)" required>
+                <mat-option value="emailPassword">Correo y contraseña</mat-option>
+                <mat-option value="google">Google</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Subir Foto de perfil -->
+          <div class="form-spacing" [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+            <label for="signUpMethod" class="form-label" style="display: flex; justify-content: center;">
+              Subir Foto de perfil
+            </label>
+            <div class="file-upload-wrapper">
+              <label for="profilePicture" class="custom-file-button"
+                [ngStyle]="{ 'background-color': uploadedFile ? '#9beb98' : '#e0e0e0' }">
+                Seleccionar foto
+              </label>
+              <input type="file" id="profilePicture" accept="image/png, image/jpeg" (change)="onPhotoSelected($event)">
+              @if(uploadedFile){
+              <span class="file-name">{{ selectedFileName || 'Ningún archivo seleccionado' }}</span>
+              }@else {
+              <span class="file-name">
+                <small>Tamaño máximo permitido: {{maxFileSizeMB}} MB</small>
+              </span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre-->
+        <div class="form-spacing" [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <label for="name" class="form-label">Nombre <small style="color: rgb(255, 73, 73);">*</small></label>
+          <input type="text" name="name" id="name" class="form-input" required autocomplete="mi nombre"
+            formControlName="name">
+          @if (fieldIsEmpty('name')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu nombre.</small>
+          }
+          @else if (fieldIsTooShort('name')) {
+          <small style="color: rgb(255, 73, 73);">
+            El nombre debe tener al menos {{minNameLength}} caracteres.
+          </small>
+          }
+          @else if (fieldIsTooLong('name')) {
+          <small style="color: rgb(255, 73, 73);">
+            Ingresa un nombre con menos de {{maxNameLength}} caracteres.
+          </small>
+          }
+          @else if (fieldHasPatternError('name')) {
+          <small style="color: rgb(255, 73, 73);">
+            Caracter inválido.
+          </small>
+          }
+        </div>
+
+        <!-- Primer apellido -->
+        <div class="form-spacing" [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <label for="lastName1" class="form-label">Primer apellido <small
+              style="color: rgb(255, 73, 73);">*</small></label>
+          <input type="text" name="lastName1" id="lastName1" class="form-input" required autocomplete="mi apellido1"
+            formControlName="lastName1">
+          @if (fieldIsEmpty('lastName1')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu apellido.</small>
+          }
+          @else if (fieldIsTooShort('lastName1')) {
+          <small style="color: rgb(255, 73, 73);">
+            El apellido debe tener al menos {{minNameLength}} caracteres.
+          </small>
+          }
+          @else if (fieldIsTooLong('lastName1')) {
+          <small style="color: rgb(255, 73, 73);">
+            Ingresa un apellido con menos de {{maxNameLength}} caracteres.
+          </small>
+          }
+          @else if (fieldHasPatternError('lastName1')) {
+          <small style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+          }
+        </div>
+
+        <!-- Segundo apellido -->
+        <div class="form-spacing" [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <label for="lastName2" class="form-label">Segundo apellido <small
+              style="color: rgb(255, 73, 73);">*</small></label>
+          <input type="text" name="lastName2" id="lastName2" class="form-input" required autocomplete="mi apellido2"
+            formControlName="lastName2">
+          @if (fieldIsEmpty('lastName2')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu apellido.</small>
+          }
+          @else if (fieldIsTooShort('lastName2')) {
+          <small style="color: rgb(255, 73, 73);">
+            El apellido debe tener al menos {{minNameLength}} caracteres.</small>
+          }
+          @else if (fieldIsTooLong('lastName2')) {
+          <small style="color: rgb(255, 73, 73);">
+            Ingresa un apellido con menos de {{maxNameLength}} caracteres.
+          </small>
+          }
+          @else if (fieldHasPatternError('lastName2')) {
+          <small style="color: rgb(255, 73, 73);">Caracter inválido.</small>
+          }
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-spacing">
+          <label for="phone" class="form-label">Teléfono <small style="color: rgb(255, 73, 73);">*</small></label>
+          <input type="tel" name="phone" id="phone" class="form-input" required pattern="^(\d{4}-\d{4}|\d{8})$"
+            placeholder="8080-1234" autocomplete="8080-1234" formControlName="phone">
+          @if (fieldIsEmpty('phone')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu número telefónico</small>
+          }
+          @else if (fieldHasPatternError('phone')) {
+          <small style="color: rgb(255, 73, 73);">Usa el formato "8080-7070" o "80807070"</small>
+          }
+        </div>
+
+        <!--Fecha de nacimiento  -->
+        <div class="form-spacing">
+          <label for="birthDate" class="form-label">Fecha de nacimiento <small
+              style="color: rgb(255, 73, 73);">*</small></label>
+          <input type="date" name="birthDate" id="birthDate" class="form-input" required
+            max="{{minimumBirthDate.toISODate()}}" formControlName="birthDate">
+          @if (fieldIsEmpty('birthDate')) {
+          <small style="color: rgb(255, 73, 73);">Debes seleccionar tu fecha de nacimiento</small>
+          }
+        </div>
+
+        <!--Lugar de trabajo (institución) -->
+        <div class="form-spacing">
+          <label for="institution" class="form-label">
+            Lugar de trabajo (institución) <small style="color: rgb(255, 73, 73);">*</small>
+          </label>
+          <input type="text" name="institution" id="institution" class="form-input" required
+            autocomplete="mi institución" formControlName="institution">
+          @if (fieldIsEmpty('institution')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu lugar de trabajo.</small>
+          }
+          @else if (fieldIsTooShort('institution')) {
+          <small style="color: rgb(255, 73, 73);">
+            El nombre debe tener al menos {{minInstitutionLength}} caracteres.
+          </small>
+          }
+          @else if (fieldIsTooLong('institution')) {
+          <small style="color: rgb(255, 73, 73);">
+            Ingresa un nombre con menos de {{maxInstitutionLength}} caracteres.
+          </small>
+          }
+        </div>
+
+        <!-- Email -->
+        <div [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <div class="form-spacing">
+            <label for="email" class="form-label">Email <small style="color: rgb(255, 73, 73);">*</small></label>
+            <input type="email" name="email" id="email" class="form-input" placeholder="correo@ejemplo.com" required=""
+              autocomplete="username" formControlName="email">
+            @if (fieldIsEmpty('email')) {
+            <small style="color: rgb(255, 73, 73);">Debes ingresar tu correo.</small>
+            }
+            @else if (invalidEmail()) {
+            <small style="color: rgb(255, 73, 73);">Usa un correo válido.</small>
+            }
+            @else if (fieldIsTooLong('email')) {
+            <small style="color: rgb(255, 73, 73);">
+              Ingresa un correo con menos de {{maxEmailLength}} caracteres.
+            </small>
+            }
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <div class="form-spacing">
+            <label for="password" class="form-label">Contraseña <small
+                style="color: rgb(255, 73, 73);">*</small></label>
+            <!-- <input type="password" name="password" id="password" class="form-input" placeholder="••••••••" required
+              autocomplete="Micontraseña1" formControlName="password"> -->
+            <div class="password-field">
+              <input [type]="showPassword ? 'text' : 'password'" name="password" id="password" class="form-input"
+                placeholder="••••••••" required autocomplete="current-password" formControlName="password" />
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility()"
+                aria-label="Mostrar u ocultar contraseña">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+          @if (fieldIsEmpty('password')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar tu contraseña.</small>
+          }@else if (invalidPassword()){
+          <small style="color: rgb(255, 73, 73);">
+            Usa al menos 6 caracteres, incluyendo mayúsculas, minúsculas y números.
+          </small>
+          }
+        </div>
+
+        <!-- OrcidDoi-->
+        <div class="form-spacing" [ngClass]="{'form-input-hidden' : selectedMethod === 'google'}">
+          <label for="orcidDoi" class="form-label">Número ORCID/DOI (Opcional)</label>
+          <input type="text" name="orcid/doi" id="orcidDoii" class="form-input" required autocomplete="orcidDoii"
+            formControlName="orcidDoi">
+        </div>
+
+        <!-- Nivel de enseñanza -->
+        <div class="form-spacing">
+          <label for="teachingLevel" class="form-label">Nivel de enseñanza <small
+              style="color: rgb(255, 73, 73);">*</small></label>
+          <mat-form-field appearance="outline">
+            <mat-label>Selecciona</mat-label>
+            <mat-select (selectionChange)="onTeachingLevelChange($event)" required>
+              <mat-option *ngFor="let teachingLevel of availableTeachingLevels" [value]="teachingLevel">
+                {{ teachingLevel }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          @if (fieldIsEmpty('teachingLevel')) {
+          <small style="color: rgb(255, 73, 73);">Selecciona tu nivel de enseñanza.</small>
+          }
+        </div>
+
+        <!-- Especialización -->
+        <div class="form-spacing" *ngIf="selectedTeachingLevel === 'Secundaria'">
+          <label for="specialization" class="form-label">Especialización <small
+              style="color: rgb(255, 73, 73);">*</small></label>
+          <mat-form-field appearance="outline">
+            <mat-label>Selecciona</mat-label>
+            <mat-select multiple (selectionChange)="onSpecializationChange($event)">
+              <mat-option *ngFor="let specialization of availableSpecializations" [value]="specialization">
+                {{ specialization }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="centered-content">
+      <small style="color: #7b7e80;">*Campos requeridos</small>
+    </div>
+
+    <div class="centered-content" style="margin-top: 15px;" *ngIf="selectedMethod !== null">
+      <button *ngIf="selectedMethod !== 'google'" class="form-button" type="submit" (click)="submitSignUp()"
+        [disabled]="isRegistering">
+        @if (isRegistering) {
+        <mat-spinner diameter="20" color="accent" style="margin-right: 8px; vertical-align: middle;" /> Registrando...
+        } @else {
+        Crear cuenta
+        }
+      </button>
+      <app-google-button buttonText="Registrarse con Google" *ngIf="selectedMethod === 'google'"
+        (click)="submitSignUp()" [disabled]="isRegistering" [buttonClicked]="'google'" />
+    </div>
+    <div class="centered-content">
+      <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+        ¿Ya tienes una cuenta? <a [routerLink]="isRegistering ? null : '/auth/sign-in'"
+          [ngClass]="isRegistering ? 'form-a-tag disabled-link' : 'form-a-tag'">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
+</section>

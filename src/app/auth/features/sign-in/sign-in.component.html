@@ -1,0 +1,89 @@
+<section class="auth-container">
+  <div>
+    <img class="auth-logo" src="{{logoPath}}" alt="ProSTEM logo" aria-hidden="true">
+  </div>
+  <div>
+    <h1 style="display: flex; text-align: center; flex-direction: column;">
+      Accede a tu cuenta
+    </h1>
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submitSignIn()">
+      <div class="form-spacing">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-input" placeholder="correo@ejemplo.com" required=""
+          autocomplete="username" formControlName="email">
+        @if (isRequired('email', form)) {
+        <small style="color: rgb(255, 73, 73);">Debes ingresar tu correo</small>
+        }
+        @else if (isValidEmail(form)) {
+        <small style="color: rgb(255, 73, 73);">Usa un correo válido</small>
+        }
+      </div>
+
+      <div class="form-spacing">
+        <label for="password" class="form-label">Contraseña</label>
+        <!-- <input type="password" name="password" id="password" class="form-input" placeholder="••••••••" required=""
+          autocomplete="current-password" formControlName="password"> -->
+        <div class="password-field">
+          <input [type]="showPassword ? 'text' : 'password'" name="password" id="password" class="form-input"
+            placeholder="••••••••" required autocomplete="current-password" formControlName="password" />
+          <button type="button" class="toggle-password" (click)="togglePasswordVisibility()"
+            aria-label="Mostrar u ocultar contraseña">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (isRequired('password', form)) {
+        <small style="color: rgb(255, 73, 73);">Ingresa tu contraseña</small>
+        }
+      </div>
+
+      <button type="submit" class="form-button" [disabled]="isLoading()">
+        <ng-container *ngIf="isLoading() && buttonClicked === 'email-password'">
+          <mat-spinner diameter="20" color="accent" style="margin-right: 8px; vertical-align: middle;" />
+          Iniciando sesión...
+        </ng-container>
+        <ng-container *ngIf="!isLoading() || buttonClicked === 'google' || buttonClicked === null">
+          Iniciar sesión
+        </ng-container>
+      </button>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; align-items: center; margin-top: 3%; margin-bottom: 3%; width: 100%;">
+          <a (click)="openRemoveUserDialog()" class="form-a-tag" style="margin-left: 15%; width: 100%;">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+      </div>
+
+      <div class="divider">
+        <span>o también</span>
+      </div>
+
+      <div class="center-google-app">
+        <app-google-button [type]="'button'" (onClick)="submitGoogleSignIn()" [disabled]="isLoading()"
+          [buttonClicked]="buttonClicked" />
+      </div>
+
+      <p style="text-align: center;">
+        ¿Aún no tienes una cuenta?
+        <a routerLink="/auth/sign-up" [ngClass]="isLoading() ? 'form-a-tag disabled-link' : 'form-a-tag'">Regístrate</a>
+      </p>
+    </form>
+  </div>
+
+  <ng-template #recoverPasswordTemplate>
+    <form [formGroup]="passRecoveryForm">
+      <div class="form-spacing">
+        <label for="emailForRecovery" class="form-label">Email</label>
+        <input type="email" name="emailForRecovery" id="emailForRecovery" class="form-input"
+          placeholder="correo@ejemplo.com" required autocomplete="username" formControlName="email">
+        @if (isRequired('email', passRecoveryForm)) {
+        <small style="color: rgb(255, 73, 73);">Debes ingresar tu correo</small>
+        }
+        @else if (isValidEmail(passRecoveryForm)) {
+        <small style="color: rgb(255, 73, 73);">Usa un correo válido</small>
+        }
+      </div>
+    </form>
+  </ng-template>
+
+</section>

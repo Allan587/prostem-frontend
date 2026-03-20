@@ -1,0 +1,68 @@
+<header class="layout-header">
+  <img routerLink="/" class="nav-bar-logo" src="{{logoPath}}" alt="Logo de ProSTEM">
+  <nav class="desktop-only">
+    <a routerLink="/" routerLinkActive="a-active" class="a-inactive" #tooltip="matTooltip"
+      matTooltip="{{homeTooltipText}}" [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+      aria-label="Anchor para ir a la página de inicio y que muestra un tooltip.">Home</a>
+    <a routerLink="/mi-cuenta" routerLinkActive="a-active" class="a-inactive" #tooltip="matTooltip"
+      matTooltip="{{myAccountTooltipText}}" [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+      aria-label="Anchor para ir a la página de mi cuenta y que muestra un tooltip.">Mi cuenta</a>
+    <a routerLink="/contactanos" routerLinkActive="a-active" class="a-inactive" #tooltip="matTooltip"
+      matTooltip="{{contactusTooltipText}}" [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+      aria-label="Anchor para ir a la página de contacto y que muestra un tooltip.">Contáctanos</a>
+    <a (click)="logOut()" routerLinkActive="a-active" class="a-inactive" #tooltip="matTooltip"
+      matTooltip="{{logoutTooltipText}}" [matTooltipPosition]="'above'" matTooltipHideDelay="{{tooltipDuration}}"
+      aria-label="Anchor para cerrar la sesión y que muestra un tooltip.">Cerrar sesión</a>
+  </nav>
+
+  <div class="mobile-only">
+    <button class="menu-button" mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item class="custom-menu-item" routerLink="/">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
+      </button>
+      <button mat-menu-item class="custom-menu-item" routerLink="/mi-cuenta">
+        <mat-icon>account_circle</mat-icon>
+        <span>Mi cuenta</span>
+      </button>
+      <button mat-menu-item class="custom-menu-item" routerLink="/contactanos">
+        <mat-icon>mail</mat-icon>
+        <span>Contáctanos</span>
+      </button>
+      <button mat-menu-item class="custom-menu-item" (click)="logOut()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>
+
+<!-- <header class="layout-header">
+  <div class="header-content">
+    <img routerLink="/" class="nav-bar-logo" [src]="logoPath" alt="logo" />
+
+    
+    <nav class="nav-links desktop-only">
+      <a routerLink="/" routerLinkActive="a-active" class="a-inactive">Home</a>
+      <a routerLink="/mi-cuenta" routerLinkActive="a-active" class="a-inactive">Mi cuenta</a>
+      <a (click)="logOut()" class="a-inactive">Cerrar sesión</a>
+    </nav>
+
+    
+    <div class="mobile-only">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item routerLink="/">Home</button>
+        <button mat-menu-item routerLink="/mi-cuenta">Mi cuenta</button>
+        <button mat-menu-item (click)="logOut()">Cerrar sesión</button>
+      </mat-menu>
+    </div>
+  </div>
+</header> -->
+
+<router-outlet />

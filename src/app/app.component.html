@@ -1,0 +1,20 @@
+<ng-container *ngIf="authReady(); else loading">
+  <router-outlet />
+  <ngx-sonner-toaster richColors position="top-center" />
+</ng-container>
+
+<ng-template #loading>
+  <div class="app-loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
+
+<!-- @if (authReady()) {
+<router-outlet />
+<ngx-sonner-toaster richColors position="top-center" />
+} @else {
+<div class="app-loading">
+  <mat-spinner></mat-spinner>
+  algo
+</div>
+} -->

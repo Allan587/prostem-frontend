@@ -1,0 +1,265 @@
+<h1 style="display: flex; text-align: center; flex-direction: column;">
+  {{eventID() ? 'Editar evento': 'Crea un evento'}}
+</h1>
+<div class="form-card">
+  <form class="event-form" [formGroup]="form" (ngSubmit)="submitEventForm()">
+    <div class="form-spacing">
+      <label for="title" class="form-label">Título<small style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="text" name="title" id="title" class="form-input" placeholder="Agregar título" required
+        formControlName="title" />
+      @if (fieldIsEmpty('title')) {
+      <small style="color: rgb(255, 73, 73);">Debes ingresar un título.</small>
+      }
+      @else if (fieldIsTooShort('title')) {
+      <small style="color: rgb(255, 73, 73);">
+        El título debe tener al menos {{minTitleLength}} caracteres.
+      </small>
+      }
+      @else if (fieldIsTooLong('title')) {
+      <small style="color: rgb(255, 73, 73);">
+        Ingresa un título con menos de {{maxTitleLength}} caracteres.
+      </small>
+      }
+      @else if (fieldHasPatternError('title')) {
+      <small style="color: rgb(255, 73, 73);">
+        Caracter inválido.
+      </small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="eventCategory" class="form-label">Categoría del evento<small
+          style="color: rgb(255, 73, 73);">*</small></label>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select formControlName="eventCategory" (selectionChange)="onCategoryTypeChange($event)" required>
+          <mat-option *ngFor="let eventCategory of avalaibleCategoryTypes" [value]="eventCategory">
+            {{ eventCategory }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (fieldIsEmpty('eventCategory')) {
+      <small style="color: rgb(255, 73, 73);">Debes seleccionar una categoría.</small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="startDate" class="form-label">Fecha de inicio<small style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="date" name="startDate" id="startDate" class="form-input" required [min]="today.toISODate()"
+        formControlName="startDate" />
+      @if (fieldIsEmpty('startDate')) {
+      <small style="color: rgb(255, 73, 73);">Selecciona la fecha de inicio.</small>
+      }
+    </div>
+
+
+    <div class="form-spacing">
+      <label for="endDate" class="form-label">Fecha de finalización<small
+          style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="date" name="endDate" id="endDate" class="form-input" required [min]="minEndDate"
+        formControlName="endDate" />
+      @if (form.errors?.['invalidDateRange']) {
+      <small style="color: rgb(255, 73, 73);">
+        La fecha de finalización no puede ser anterior a la fecha de inicio.
+      </small>
+      } @if (fieldIsEmpty('endDate')) {
+      <small style="color: rgb(255, 73, 73);">Selecciona la fecha de finalización.</small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="evaluationType" class="form-label">Tipo de evaluación<small
+          style="color: rgb(255, 73, 73);">*</small></label>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select formControlName="evaluationType" (selectionChange)="onEvaluationTypeChange($event)" required>
+          <mat-option *ngFor="let evaluationType of avalaibleEvaluationTypes" [value]="evaluationType">
+            {{ evaluationType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (fieldIsEmpty('evaluationType')) {
+      <small style="color: rgb(255, 73, 73);">Selecciona el tipo de evaluación del evento.</small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="durationHours" class="form-label">Cantidad de horas</label>
+      <input type="number" name="durationHours" id="durationHours" class="form-input" formControlName="durationHours"
+        placeholder="Este campo es opcional." />
+      @if (fieldIsTooShort('durationHours')) {
+      <small style="color: rgb(255, 73, 73);">
+        El valor no puede ser negativo.
+      </small>
+      }
+      @if (form.errors?.['durationHoursNotInteger']) {
+      <small style="color: rgb(255, 73, 73);">
+        Ingresa un valor entero.
+      </small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="startTime" class="form-label">Comienza a las<small style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="time" name="startTime" id="startTime" class="form-input" required formControlName="startTime" />
+      @if (fieldIsEmpty('startTime')) {
+      <small style="color: rgb(255, 73, 73);">Selecciona la hora en que inicia el evento.</small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="endTime" class="form-label">Termina a las<small style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="time" name="endTime" id="endTime" class="form-input" required formControlName="endTime" />
+      @if (fieldIsEmpty('endTime')) {
+      <small style="color: rgb(255, 73, 73);">Selecciona la hora en que finaliza el evento.</small>
+      }
+      @if (form.errors?.['invalidTimeRange']) {
+      <small style="color: rgb(255, 73, 73);">
+        La hora de finalización no puede ser anterior a la hora de inicio.
+      </small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="place" class="form-label">Lugar<small style="color: rgb(255, 73, 73);">*</small></label>
+      <input type="text" name="place" id="place" class="form-input" required placeholder="¿Dónde será tu evento?"
+        formControlName="place" />
+      <small>También puedes agregar el link de tu reunión aquí</small>
+      @if (fieldIsEmpty('place')) {
+      <small style="color: rgb(255, 73, 73);">Debes ingresar el lugar del evento.</small>
+      }
+      @if (fieldIsTooShort('place')) {
+      <small style="color: rgb(255, 73, 73);">
+        El lugar debe tener al menos {{minPlaceLength}} caracteres.
+      </small>
+      }
+      @if (fieldIsTooLong('place')) {
+      <small style="color: rgb(255, 73, 73);">
+        Ingresa un lugar con menos de {{maxPlaceLength}} caracteres.
+      </small>
+      }
+      @if (fieldHasPatternError('place')) {
+      <small style="color: rgb(255, 73, 73);">
+        Caracter inválido.
+      </small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="description" class="form-label">Agregar descripción<small
+          style="color: rgb(255, 73, 73);">*</small></label>
+      <!-- <input type="text" name="description" id="description" class="form-input" required
+        formControlName="description" /> -->
+      <textarea matInput name="description" id="description" class="form-input" required formControlName="description"
+        rows="4"></textarea>
+      @if (fieldIsEmpty('description')) {
+      <small style="color: rgb(255, 73, 73);">Debes ingresar una descripción para el evento.</small>
+      }
+      @if (fieldIsTooShort('description')) {
+      <small style="color: rgb(255, 73, 73);">
+        La descripción debe tener al menos {{minDescriptionLength}} caracteres.
+      </small>
+      }
+      @if (fieldIsTooLong('description')) {
+      <small style="color: rgb(255, 73, 73);">
+        Ingresa una descripción con menos de {{maxDescriptionLength}} caracteres.
+      </small>
+      }
+      @if (fieldHasPatternError('description')) {
+      <small style="color: rgb(255, 73, 73);">
+        Caracter inválido.
+      </small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="enrollmentType" class="form-label">Tipo de inscripción
+        <small style="color: rgb(255, 73, 73);">*</small></label>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select formControlName="enrollmentType" (selectionChange)="onEnrollmentTypeChange($event)" required>
+          <mat-option *ngFor="let enrollmentType of availableEnrollmentTypes" [value]="enrollmentType">
+            {{ enrollmentType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (fieldIsEmpty('enrollmentType')) {
+      <small style="color: rgb(255, 73, 73);">Debes seleccionar un tipo de inscripción para el evento.</small>
+      }
+    </div>
+
+    <div class="form-spacing">
+      <label for="teachingLevels" class="form-label">
+        Dirigido a<small style="color: rgb(255, 73, 73);">*</small></label>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select multiple formControlName="teachingLevels">
+          <mat-option *ngFor="let teachingLevels of availableTeachingLevels" [value]="teachingLevels">
+            {{ teachingLevels }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (fieldIsEmpty('teachingLevels')) {
+      <small style="color: rgb(255, 73, 73);">Debes seleccionar al menos un nivel de educación.</small>
+      }
+    </div>
+
+    <div class="form-spacing" *ngIf="showSpecialties">
+      <label for="specialties" class="form-label">
+        Especialidad(es)<small style="color: rgb(255, 73, 73);">*</small></label>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Selecciona</mat-label>
+        <mat-select multiple formControlName="specialties" (selectionChange)="onSpecialtiesChange($event)">
+          <mat-option *ngFor="let specialties of availableSpecialties" [value]="specialties">
+            {{ specialties }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (fieldIsEmpty('specialties')) {
+      <small style="color: rgb(255, 73, 73);">Debes seleccionar al menos una especialidad.</small>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group-half">
+        <label for="capacity" class="form-label">Cupo</label>
+        <input type="number" name="capacity" id="capacity" class="form-input" formControlName="capacity"
+          placeholder="Campo opcional" />
+        <small style="font-size: 12px;">
+          Para cupo ilimitado, deja este campo en 0.
+        </small>
+        @if (fieldIsTooShort('capacity')) {
+        <small style="color: rgb(255, 73, 73);">
+          El cupo no puede ser negativo.
+        </small>
+        }@if (fieldIsTooLong('capacity')) {
+        <small style="color: rgb(255, 73, 73);">
+          El cupo máximo permitido es de {{maxCapacity}}.
+        </small>
+        }
+        @if (form.errors?.['capacityNotInteger']) {
+        <small style="color: rgb(255, 73, 73);">
+          Ingresa un valor entero.
+        </small>
+        }
+      </div>
+
+      <div class="form-group-half onSite-virtual-toggle">
+        <label for="virtualEvent" class="form-label">Presencial</label>
+        <mat-slide-toggle formControlName="virtualEvent" />
+        <label for="virtualEvent" class="form-label">Virtual</label>
+      </div>
+
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="button-row">
+      <button type="button" class="form-button" (click)="goBack()" style="justify-content: center;">
+        <mat-icon>arrow_back</mat-icon> Regresar</button>
+      <button type="submit" class="form-button" [disabled]="loadingSave()" style="justify-content: center;">
+        <mat-icon>save</mat-icon> {{loadingSave() ? 'Guardando...' : 'Guardar'}}
+      </button>
+    </div>
+
+  </form>
+</div>

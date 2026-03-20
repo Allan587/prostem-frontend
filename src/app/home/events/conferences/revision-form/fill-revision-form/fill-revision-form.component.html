@@ -1,0 +1,91 @@
+<div class="fill-revision-form-container">
+  <h1>Formulario de Revisión</h1>
+
+  <!-- Show loading message if form is not yet loaded -->
+  <div *ngIf="!form">
+    <p>Cargando formulario...</p>
+  </div>
+
+  <!-- Show the form when it is loaded -->
+  <div *ngIf="form">
+    <mat-card *ngFor="let question of form | keyvalue">
+      <mat-card-title>{{ question.value.question }}</mat-card-title>
+
+      <!-- Single Selection -->
+      <div *ngIf="question.value.type === 'single'">
+        <mat-radio-group [(ngModel)]="answers[question.key]" (ngModelChange)="onAnswerChange(question.key, $event)">
+          <mat-radio-button *ngFor="let option of question.value.options | keyvalue" [value]="option.value">
+            {{ option.value }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Multiple Selection -->
+      <div *ngIf="question.value.type === 'multiple'">
+        <mat-checkbox *ngFor="let option of question.value.options | keyvalue" [(ngModel)]="answers[question.key][option.key]" (ngModelChange)="onAnswerChange(question.key, answers[question.key])">
+          {{ option.value }}
+        </mat-checkbox>
+      </div>
+
+      <!-- Text Input -->
+      <div *ngIf="question.value.type === 'text'">
+        <mat-form-field appearance="outline">
+          <mat-label>Respuesta</mat-label>
+          <textarea matInput [(ngModel)]="answers[question.key]" (ngModelChange)="onAnswerChange(question.key, $event)"></textarea>
+        </mat-form-field>
+      </div>
+    </mat-card>
+
+    <!-- Final Score Question -->
+    <mat-card>
+      <mat-card-title>¿Cómo califica esta ponencia?</mat-card-title>
+      <mat-radio-group [(ngModel)]="finalScore" (ngModelChange)="onFinalScoreChange($event)">
+        <mat-radio-button value="Aceptada">Aceptada</mat-radio-button>
+        <mat-radio-button *ngIf="overallResult !== 'Aceptada con cambios requeridos'" value="Aceptada con cambios requeridos">
+          Aceptada con cambios requeridos
+        </mat-radio-button>
+        <mat-radio-button value="No aceptada">No aceptada</mat-radio-button>
+      </mat-radio-group>
+    </mat-card>
+
+    <!-- Required Changes Question -->
+    <mat-card *ngIf="finalScore === 'Aceptada con cambios requeridos'">
+      <mat-card-title>Anote los cambios requeridos para la ponencia</mat-card-title>
+      <mat-form-field appearance="outline">
+        <mat-label>Cambios requeridos</mat-label>
+        <textarea matInput [(ngModel)]="requiredChanges"></textarea>
+      </mat-form-field>
+    </mat-card>
+
+    <!-- Save Button -->
+    <div class="complete-review-button">
+      <button mat-raised-button color="primary" (click)="saveForm()">Finalizar revisión</button>
+    </div>
+  </div>
+</div>
+
+<app-modal *ngIf="isSavingModalOpened" 
+           (closeModal)="closeSavingModal()"
+           [showSubmitBtn]="false" 
+           [isSubmittingChanges]="isSubmittingForm">
+  <ng-container modal-header>
+    <div class="modal-header-text">
+      Guardando Revisión
+    </div>
+  </ng-container>
+  <ng-container modal-body>
+    <div class="confirmation-body">
+      <div class="loading-container">
+        <mat-spinner diameter="40" color="primary"></mat-spinner>
+        <p style="margin-top: 15px; text-align: center; color: #007bff;">
+          Guardando revisión, por favor espera...
+        </p>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <div class="confirmation-footer">
+      <small style="color: #007bff;">Procesando...</small>
+    </div>
+  </ng-container>
+</app-modal>

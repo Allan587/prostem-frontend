@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+a, button {
+  font-weight: 500;
+  font-size: 16px;
+  color: #7b7e80;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth-logo {
+  width: 330px;
+  height: 82px;
+  max-width: 330px;
+  max-height: 82px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 5%;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 9px 25px;
+  background-color: #2C2C2C;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  border-radius: 8px;
+}
+
+button:hover {
+  color: #e2e4e6;
+  background-color: rgb(5, 107, 133);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.spinner {
+  display: flex;
+  justify-content: center;
+}
+
+/* Smaller spinner for the configuration module */
+.spinner-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* ------------------------------------------  */
+
+/* Change spinner color */
+.form-button:hover .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: black;
+}
+
+.form-button .mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: white;
+}
+/* -------------------- */
+
+
+/* Table styles */
+.table_component table {
+  min-width: 1116px;
+  table-layout: auto;
+}
+
+.cell-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  height: 100%;
+  flex-wrap: wrap;
+}
+
+.modal-header-text {
+  font-size: 20px;
+}
+
+.make-select-wider {
+  display: flex;
+  justify-content: center;
+}
+
+.make-select-wider mat-form-field{
+  width: 75%;
+}
+
+@media (max-width: 1429px) {
+  .cell-actions {      
+    gap: 1px;
+  }
+
+}
+/* -------------------- */

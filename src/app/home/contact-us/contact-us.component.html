@@ -1,0 +1,100 @@
+<div class="main-container">
+  <h1 style="display: flex; text-align: center; flex-direction: column;">
+    Ponte en contacto con nosotros
+  </h1>
+
+  <div class="user-account-wrapper">
+    <div class="form-card">
+      <form class="profile-form" [formGroup]="form" (ngSubmit)="submitComment()">
+
+        <!-- Subject -->
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            Asunto <small style="color: rgb(255, 73, 73);">*</small>
+          </label>
+          <input type="text" name="subject" id="subject" class="form-input" placeholder="El asunto" required
+            formControlName="subject" />
+          @if (fieldIsEmpty('subject')) {
+          <small style="color: rgb(255, 73, 73);">Debes ingresar el asunto</small>
+          }
+          @else if (fieldIsTooShort('subject')) {
+          <small style="color: rgb(255, 73, 73);">El asunto debe tener al menos {{minSubjectLength}}
+            caracteres</small>
+          }
+          @else if (fieldIsTooLong('subject')) {
+          <small style="color: rgb(255, 73, 73);">Ingresa un asunto con menos de {{maxSubjectLength}}
+            caracteres</small>
+          }
+          @else if (fieldHasPatternError('subject')) {
+          <small style="color: rgb(255, 73, 73);">Caracter inválido</small>
+          }
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone" class="form-label">Teléfono de contacto</label>
+          <input type="tel" name="phone" id="phone" class="form-input" placeholder="Campo opcional"
+            formControlName="phone" />
+          @if (fieldHasPatternError('phone')) {
+          <small style="color: rgb(255, 73, 73);">Usa el formato "8080-7070" o "80807070"</small>
+          }
+        </div>
+
+        <!-- Comment -->
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            Comentario <small style="color: rgb(255, 73, 73);">*</small>
+          </label>
+          <textarea matInput name="comment" id="comment" class="form-input" required formControlName="comment" rows="8"
+            placeholder="¿Qué deseas comentarnos?"></textarea>
+          @if (fieldIsEmpty('comment')) {
+          <small style="color: rgb(255, 73, 73);">
+            Debes ingresar el comentario.
+          </small>
+          }
+          @else if (fieldIsTooShort('comment')) {
+          <small style="color: rgb(255, 73, 73);">
+            El comentario debe tener al menos {{minCommentLength}} caracteres.
+          </small>
+          }
+          @else if (fieldIsTooLong('comment')) {
+          <small style="color: rgb(255, 73, 73);">
+            El comentario debe tener como máximo {{maxCommentLength}} caracteres.
+          </small>
+          }
+          @else if (fieldHasPatternError('comment')) {
+          <small style="color: rgb(255, 73, 73);">Caracter inválido</small>
+          }
+        </div>
+
+        <div class="commentPolicy">
+          <small>
+            Por favor, evita lenguaje ofensivo, sé respetuoso y claro en tus comentarios.
+            ¡Queremos ayudarte lo mejor posible!
+          </small>
+          <small>
+            <small style="color: rgb(255, 73, 73);">*</small> Campos requeridos
+          </small>
+        </div>
+
+        <div style="display: flex; justify-content: center;">
+          <button type="submit" class="form-button" [disabled]="coolDownIsActive || isSubmitting"
+            style="display: flex; justify-content: center;">
+            <ng-container *ngIf="isSubmitting">
+              <mat-spinner diameter="20" color="accent" style="margin-right: 8px; vertical-align: middle;" />
+              Enviando...
+            </ng-container>
+
+            <ng-container *ngIf="!isSubmitting && coolDownIsActive">
+              Espera un momento para enviar otro comentario.
+            </ng-container>
+
+            <ng-container *ngIf="!isSubmitting && !coolDownIsActive">
+              Enviar comentario
+            </ng-container>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

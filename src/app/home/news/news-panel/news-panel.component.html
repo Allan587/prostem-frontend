@@ -83,11 +83,14 @@
       <div class="custom-card-header">
         <div class="title-section">
           <h3 class="custom-title">{{ news.title }}</h3>
-          <div class="custom-subtitle">
-            {{ formatDate(news.creationDate) }} - {{ formatTime(news.creationTime) }}
-            <span *ngIf="selectedFilter === 'all' && news.creatorId === userId" class="my-news-badge">
-              Mi noticia
-            </span>
+          <div class="subtitle-section">
+            <span class="custom-subtitle">Fecha de publicación: </span>
+            <div class="date-section"> 
+              <span class="custom-date">{{ formatDate(news.creationDate) }} - {{ formatTime(news.creationTime) }}</span>
+              <span *ngIf="selectedFilter === 'all' && news.creatorId === userId" class="my-news-badge">
+                Mi noticia
+              </span>
+            </div>
           </div>
         </div>
         

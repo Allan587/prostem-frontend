@@ -17,7 +17,7 @@ export default class HeaderComponent {
 
   private authState = inject(AuthStateService);
   private router = inject(Router);
-  logoPath = '../../../../assets/ProSTEM-logo-no-label.jpg';
+  logoPath = '../../../../assets/ProSTEM-logo-with-label.jpg';
 
   homeTooltipText = 'Ir al inicio';
   myAccountTooltipText = 'Ver mis datos';
